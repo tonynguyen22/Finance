@@ -1,6 +1,8 @@
 import yfinance as yf
 import pandas as pd
+import streamlit as st
 
+@st.cache_data(ttl=3600, show_spinner=False)
 def get_analyst_ratings(symbol: str) -> pd.DataFrame:
     """
     Returns a one-row DataFrame (latest period) with columns:

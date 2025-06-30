@@ -19,6 +19,7 @@ from data import (
     get_income_statement, get_balance_sheet, get_stock_price, get_company_info,
     get_financial_ratios, get_key_metrics, get_cash_flow
 )
+from yf_data import get_analyst_ratings, get_target_prices
 
 
 # Define caching functions for each API call
@@ -186,7 +187,34 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
 
             # Display the income statement table in Streamlit
             st.table(income_statement_data)
+        empty_lines(2)
 
+        # Display analyst ratings
+        targets = get_target_prices(symbol_input)
+        st.subheader("👓 Analyst Price Targets")
+        cols = st.columns(3)
+        cols[0].metric("Mean Target",   targets["target_mean"] or "N/A")
+        cols[1].metric("Low Target",    targets["target_low"]  or "N/A")
+        cols[2].metric("High Target",   targets["target_high"] or "N/A")
+
+        # Get the analyst ratings trends
+        trends_df = get_analyst_ratings(symbol_input)
+
+        st.subheader("📊 Analyst Most Recommendation Snapshot")
+        if trends_df.empty:
+            st.write("No trend data available.")
+        else:
+            latest = trends_df.iloc[0]
+
+            # Show each count as a big metric
+            col1, col2, col3, col4, col5 = st.columns(5)
+            col1.metric("💪 Strong Buy",  latest["strongBuy"])
+            col2.metric("👍 Buy",         latest["buy"])
+            col3.metric("🤝 Hold",        latest["hold"])
+            col4.metric("👎 Sell",        latest["sell"])
+            col5.metric("💀 Strong Sell", latest["strongSell"])
+
+        empty_lines(2)
 
         # Configure the plots bar
         config = {
@@ -227,7 +255,7 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
         st.plotly_chart(fig, config=config, use_container_width=True)
 
 
-        # Display net income
+        # Display net income and revenu
         # Create the line chart 
         fig = go.Figure()
         fig.add_trace(
@@ -260,31 +288,32 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
         # Display the graph
         st.plotly_chart(fig, config=config, use_container_width=True)
 
-
         # Display profitability margins
-        # Create an horizontal bar chart of profitability margins
+        # Create an vertical line chart of profitability margins
         fig = go.Figure()
-        fig.add_trace(go.Bar(
-            y=ratios_data.index,
-            x=ratios_data['Gross Profit Margin'],
+        fig.add_trace(go.Scatter(
+            x=ratios_data.index,
+            y=ratios_data['Gross Profit Margin'],
+            mode='lines+markers',
             name='Gross Profit Margin',
-            marker=dict(color='rgba(60, 179, 113, 0.85)'),
-            orientation='h',
+            line=dict(color='rgba(60, 179, 113, 0.85)', width=2),
+            marker=dict(symbol='circle', size=5, color='rgba(60, 179, 113, 0.85)', line=dict(width=1, color='rgba(60, 179, 113, 0.85)'))
         ))
-        fig.add_trace(go.Bar(
-            y=ratios_data.index,
-            x=ratios_data['Operating Profit Margin'],
+        fig.add_trace(go.Scatter(
+            x=ratios_data.index,
+            y=ratios_data['Operating Profit Margin'],
+            mode='lines+markers',
             name='EBIT Margin',
-            marker=dict(color='rgba(30, 144, 255, 0.85)'),
-            orientation='h',
+            line=dict(color='rgba(30, 144, 255, 0.85)', width=2),
+            marker=dict(symbol='circle', size=5, color='rgba(30, 144, 255, 0.85)', line=dict(width=1, color='rgba(30, 144, 255, 0.85)'))
         ))
-
-        fig.add_trace(go.Bar(
-            y=ratios_data.index,
-            x=ratios_data['Net Profit Margin'],
+        fig.add_trace(go.Scatter(
+            x=ratios_data.index,
+            y=ratios_data['Net Profit Margin'],
+            mode='lines+markers',
             name='Net Profit Margin',
-            marker=dict(color='rgba(173, 216, 230, 0.85)'),
-            orientation='h',
+            line=dict(color='rgba(173, 216, 230, 0.85)', width=2),
+            marker=dict(symbol='circle', size=5, color='rgba(173, 216, 230, 0.85)', line=dict(width=1, color='rgba(173, 216, 230, 0.85)'))
         ))
 
         # Update layout
@@ -292,11 +321,11 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
             title='Profitability Margins',
             bargap=0.1,
             dragmode='pan',
-            xaxis=dict(
+            yaxis=dict(
                 fixedrange=True,
                 tickformat='.0%'
             ),
-            yaxis=dict(
+            xaxis=dict(
             fixedrange=True
              )
         )
@@ -475,6 +504,7 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
         st.dataframe(ratios_table, width=800, height=400)
 
     except Exception as e:
+        st.exception(e)
         st.error('Not possible to develop dashboard. Please try again.')
         sys.exit()
 

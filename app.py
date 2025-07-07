@@ -309,14 +309,6 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
         ))
         fig.add_trace(go.Scatter(
             x=ratios_data.index,
-            y=ratios_data['EBITDA Margin'],
-            mode='lines+markers',
-            name='EBITDA Margin',
-            line=dict(color='rgba(255, 140, 0, 0.85)', width=2),
-            marker=dict(symbol='circle', size=5, color='rgba(255, 140, 0, 0.85)', line=dict(width=1, color='rgba(255, 140, 0, 0.85)'))
-        ))
-        fig.add_trace(go.Scatter(
-            x=ratios_data.index,
             y=ratios_data['Net Profit Margin'],
             mode='lines+markers',
             name='Net Profit Margin',

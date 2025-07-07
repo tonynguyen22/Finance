@@ -2,7 +2,7 @@ import yfinance as yf
 import pandas as pd
 import streamlit as st
 
-@st.cache_data(ttl=3600, show_spinner=False)
+@st.cache_data(ttl=60*60*24*30)
 def get_analyst_ratings(symbol: str) -> pd.DataFrame:
     """
     Returns a one-row DataFrame (latest period) with columns:
@@ -20,7 +20,7 @@ def get_analyst_ratings(symbol: str) -> pd.DataFrame:
     return first
 
 
-
+@st.cache_data(ttl=60*60*24*30)
 def get_target_prices(symbol: str) -> dict:
     """
     Returns a dict with mean, low and high analyst target prices.

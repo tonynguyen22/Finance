@@ -371,6 +371,7 @@ def get_financial_ratios(symbol: str) -> pd.DataFrame:
                 'Pretax Profit Margin': report['pretaxProfitMargin'],
                 'Net Profit Margin': report['netProfitMargin'],
                 'Effective Tax Rate': report['effectiveTaxRate'],
+                'EBITDA Margin': report['ebitdaMargin'],
                 'Return on Assets': report['returnOnAssets'],
                 'Return on Equity': report['returnOnEquity'],
                 'Return on Capital Employed': report['returnOnCapitalEmployed'],

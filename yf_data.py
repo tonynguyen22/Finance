@@ -32,4 +32,3 @@ def get_target_prices(symbol: str) -> dict:
         "target_low":  info.get("targetLowPrice"),
         "target_high": info.get("targetHighPrice")
     }
-

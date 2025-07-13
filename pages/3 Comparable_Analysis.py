@@ -1,6 +1,10 @@
 import streamlit as st
-from utils import fetch_api
 import pandas as pd
+
+@st.cache_data(ttl=3600)
+def fetch_api(url):
+    import requests
+    return requests.get(url).json()
 
 FMP_API_KEY = st.secrets["FMP_API_KEY"]
 BASE_URL1 = "https://financialmodelingprep.com/stable"

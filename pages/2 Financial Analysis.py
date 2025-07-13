@@ -1,7 +1,11 @@
 import streamlit as st
-from utils import fetch_api
 import pandas as pd
 from millify import millify
+
+@st.cache_data(ttl=3600)
+def fetch_api(url):
+    import requests
+    return requests.get(url).json()
 
 FMP_API_KEY = st.secrets["FMP_API_KEY"]
 base_url = 'https://financialmodelingprep.com/api/v3/'
@@ -52,8 +56,22 @@ if symbol:
 
     def highlight_negative(val):
         try:
-            val_str = str(val).replace(',', '').replace('−', '-')
-            if float(val_str) < 0:
+            val_str = str(val).replace(',', '').replace('−', '-').upper()
+            multiplier = 1
+            if val_str.endswith('K'):
+                multiplier = 1e3
+                val_str = val_str[:-1]
+            elif val_str.endswith('M'):
+                multiplier = 1e6
+                val_str = val_str[:-1]
+            elif val_str.endswith('B'):
+                multiplier = 1e9
+                val_str = val_str[:-1]
+            elif val_str.endswith('T'):
+                multiplier = 1e12
+                val_str = val_str[:-1]
+            num = float(val_str) * multiplier
+            if num < 0:
                 return 'color: red'
         except:
             pass

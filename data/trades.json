@@ -1,0 +1,80 @@
+[
+    {
+      "ticker": "NU",
+      "company": "Nu Holdings Ltd",
+      "date": "2024-09-19",
+      "shares": 3,
+      "cost_share": 15.05
+    },
+    {
+      "ticker": "NU",
+      "company": "Nu Holdings Ltd",
+      "date": "2024-09-26",
+      "shares": 3,
+      "cost_share": 13.98
+    },
+    {
+      "ticker": "NU",
+      "company": "Nu Holdings Ltd",
+      "date": "2024-12-02",
+      "shares": 3,
+      "cost_share": 11.90
+    },
+    {
+      "ticker": "NU",
+      "company": "Nu Holdings Ltd",
+      "date": "2025-05-16",
+      "shares": 6,
+      "cost_share": 12.84
+    },
+    {
+      "ticker": "NU",
+      "company": "Nu Holdings Ltd",
+      "date": "2024-12-19",
+      "shares": 3,
+      "cost_share": 10.41
+    },
+    {
+      "ticker": "NU",
+      "company": "Nu Holdings Ltd",
+      "date": "2025-06-12",
+      "shares": 6,
+      "cost_share": 12.17
+    },
+    {
+      "ticker": "GOOG",
+      "company": "Alphabet Inc",
+      "date": "2025-06-10",
+      "shares": 2.2,
+      "cost_share": 181.53
+    },
+    {
+      "ticker": "SOXX",
+      "company": "iShares Semiconductor ETF",
+      "date": "2025-06-10",
+      "shares": 2.21,
+      "cost_share": 226.00
+    },
+    {
+      "ticker": "TSM",
+      "company": "Taiwan Semiconductor Manufacturing ADR",
+      "date": "2025-06-10",
+      "shares": 1.41,
+      "cost_share": 212.23
+    },
+    {
+      "ticker": "CVS",
+      "company": "CVS Health Corp",
+      "date": "2025-06-11",
+      "shares": 7.71,
+      "cost_share": 64.88
+    },
+    {
+      "ticker": "GXO",
+      "company": "GXO Logistics Inc",
+      "date": "2025-06-11",
+      "shares": 11,
+      "cost_share": 43.92
+    }
+  ]
+  

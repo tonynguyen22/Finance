@@ -136,7 +136,7 @@ st.write("This proposed portfolio allocation for US investments focuses on growt
 with st.expander("1. Technology (30%) - AI & Cloud Dominance"):
     st.markdown("""
     **Objective:** Focus on companies leading in Artificial Intelligence (AI) and cloud computing, key drivers of market growth.
-    - **AI Infrastructure:** **NVDA** (NVIDIA),  :green[**ANET** (Arista Networks)]
+    - **AI Infrastructure:** green[**NVDA** (NVIDIA)],  :green[**ANET** (Arista Networks)], :green[**TSM** (Taiwan Semiconductor Manufacturing)]
     - **Cloud & Software:** :green[**MSFT** (Microsoft)], :green[**GOOGL** (Alphabet - Google)]
     """)
 
@@ -144,23 +144,23 @@ with st.expander("1. Technology (30%) - AI & Cloud Dominance"):
 with st.expander("2. Industrials (15%) - Logistics & Automation"):
     st.markdown("""
     **Objective:** Benefit from industrial automation trends, infrastructure investment, and the development of digital supply chains.
-    - **Logistics & Automation:** **GXO** (GXO Logistics), **HON** (Honeywell), **TDG** (TransDigm Group)
-    - **Infrastructure:** **CAT** (Caterpillar), **DE** (Deere & Company)
+    - **Logistics & Automation:** :green[**GXO** (GXO Logistics)], :green[**TDG** (TransDigm Group)]
+    - **Infrastructure:** yellow[**CAT** (Caterpillar)]
     """)
 
 # Financials
 with st.expander("3. Financials (15%) - Payments & Diversified Services"):
     st.markdown("""
     **Objective:** Bet on the growth of electronic transactions and the stability of large financial institutions.
-    - **Payments:** **V** (Visa), **MA** (Mastercard)
-    - **Diversified Financials:** **BRK.B** (Berkshire Hathaway), **JPM** (JPMorgan Chase)
+    - **Payments:** green[**V** (Visa)]
+    - **Diversified Financials:** green[**JPM** (JPMorgan Chase)]
     """)
 
 # Communication Services
 with st.expander("4. Communication Services (10%) - Digital Content & Connectivity"):
     st.markdown("""
     **Objective:** Capture value from the explosion of digital content, online advertising, and user connectivity platforms.
-    - **Digital Content & Ads:** **GOOGL** (Alphabet - Google), **META** (Meta Platforms), **NFLX** (Netflix)
+    - **Digital Content & Ads:**  **META** (Meta Platforms), **NFLX** (Netflix)
     - **Networking:** **CMCSA** (Comcast)
     """)
 
@@ -168,8 +168,8 @@ with st.expander("4. Communication Services (10%) - Digital Content & Connectivi
 with st.expander("5. Healthcare (10%) - Innovation & Stability"):
     st.markdown("""
     **Objective:** A defensive sector with growth potential driven by biotech innovation and medical devices.
-    - **Biotech & Pharma:** **LLY** (Eli Lilly), **JNJ** (Johnson & Johnson)
-    - **Medical Devices:** **ISRG** (Intuitive Surgical), **ABT** (Abbott Laboratories)
+    - **Biotech & Pharma:** green[**LLY** (Eli Lilly)]
+    - **Medical Devices:** green[**ABT** (Abbott Laboratories)]
     """)
 
 # Utilities & Renewable Energy

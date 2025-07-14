@@ -16,21 +16,19 @@ symbol = st.sidebar.text_input('Ticker:')
 if symbol:
     symbol = symbol.upper()
     data_options = {
-        'Income Statement': 'income-statement',
         'Balance Sheet Statement': 'balance-sheet-statement',
-        'Cash Flow Statement': 'cash-flow-statement',
-        'Income Statement Growth': 'income-statement-growth',
         'Balance Sheet Growth': 'balance-sheet-statement-growth',
+        'Income Statement': 'income-statement',
+        'Income Statement Growth': 'income-statement-growth',
+        'Cash Flow Statement': 'cash-flow-statement',      
         'Cash Flow Growth': 'cash-flow-statement-growth',
+        'Key Metrics TTM': 'key-metrics-ttm',        
         'Ratios TTM': 'ratios-ttm',
         'Ratios': 'ratios',
         'Financial Growth': 'financial-growth',
-        'Quote': 'quote',
         'Rating': 'rating',
         'Enterprise Values': 'enterprise-values',
-        'Key Metrics TTM': 'key-metrics-ttm',
-        'Key Metrics': 'key-metrics',
-        'Discounted Cash Flow': 'discounted-cash-flow',
+        'Discounted Cash Flow': 'discounted-cash-flow'
     }
 
     selected_label = st.sidebar.selectbox('Financial Data Type', options=list(data_options.keys()))
@@ -48,7 +46,7 @@ if symbol:
         def apply_millify(val):
             try:
                 if isinstance(val, (int, float)):
-                    return millify(val, precision=1)
+                    return millify(val, precision=2)
             except:
                 return val
             return val

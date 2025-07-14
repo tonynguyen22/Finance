@@ -1,63 +1,128 @@
 import streamlit as st
 import pandas as pd
+import finnhub
+import datetime
+import time
+import numpy as np
 
-@st.cache_data(ttl=3600)
-def fetch_api(url):
-    import requests
-    return requests.get(url).json()
+# Cache client initialization to prevent re-creation
+@st.cache_resource
+def get_finnhub_client(api_key):
+    return finnhub.Client(api_key=api_key)
 
-FMP_API_KEY = st.secrets["FMP_API_KEY"]
-BASE_URL1 = "https://financialmodelingprep.com/stable"
-BASE_URL2 = "https://financialmodelingprep.com/api/v3"
+FINN_API_KEY = st.secrets["FINHUB_API_KEY"]
+finnhub_client = get_finnhub_client(FINN_API_KEY)
 
 st.title("📊 Comparable Analysis")
 
-ticker = st.text_input("Enter Ticker Symbol (e.g., AAPL):", value="AAPL").upper()
+ticker = st.text_input("Enter Ticker Symbol:").upper()
 run_analysis = st.button("Go")
 
-if run_analysis and ticker:
-    peer_url = f"{BASE_URL1}/stock-peers?symbol={ticker}&apikey={FMP_API_KEY}"
-    peers_data = fetch_api(peer_url)
-
-    if not peers_data or not isinstance(peers_data, list):
-        st.error("No peer data returned.")
-        st.stop()
-
-    all_symbols = [ticker] + [item["symbol"] for item in peers_data if item["symbol"] != ticker][:5]
-    st.write(f"✅ Peers found: {', '.join(all_symbols)}")
-
-    ratios = []
-    for sym in all_symbols:
-        url = f"{BASE_URL2}/key-metrics-ttm/{sym}?apikey={FMP_API_KEY}"
-        data = fetch_api(url)
-        if isinstance(data, list) and len(data) > 0:
-            record = data[0]
-            ratios.append({
-                "Symbol": sym,
-                "P/E (TTM)": record.get("peRatioTTM"),
-                "P/B (TTM)": record.get("pbRatioTTM"),
-                "EV/EBITDA (TTM)": record.get("enterpriseValueOverEBITDATTM")
-            })
-
-    if not ratios:
-        st.error("No ratio data found.")
-        st.stop()
-
-    selected = pd.DataFrame(ratios)
-    st.subheader("Peer Valuation Comparison")
-    st.dataframe(selected.round(1).set_index("Symbol"))
-
-    pe_history_url = f"{BASE_URL2}/ratios/{ticker}?limit=20&apikey={FMP_API_KEY}"
-    pe_history_data = fetch_api(pe_history_url)
-
+# Cached function to fetch company peers
+@st.cache_data(ttl=3600) # Cache for 1 hour (3600 seconds)
+def fetch_company_peers(symbol):
     try:
-        pe_values = [x["priceEarningsRatio"] for x in pe_history_data if x["priceEarningsRatio"] is not None][:5]
-        pe_avg = round(sum(pe_values) / len(pe_values), 1)
+        return finnhub_client.company_peers(symbol)
+    except Exception as e:
+        st.error(f"Error fetching peer data from Finnhub: {e}")
+        return []
 
-        pe_current = next((r["P/E (TTM)"] for r in ratios if r["Symbol"] == ticker), None)
+# Cached function to fetch basic financial metrics
+@st.cache_data(ttl=3600) # Cache for 1 hour
+def fetch_basic_financials(symbol):
+    try:
+        return finnhub_client.company_basic_financials(symbol, 'all')
+    except finnhub.FinnhubAPIException as e:
+        if e.status_code == 403:
+            st.error(f"Access Denied (403) for {symbol}. {symbol} will not be included.")
+            return None
+        else:
+            st.warning(f"Could not fetch financial data for {symbol} from Finnhub: {e}")
+            return None
+    except Exception as e:
+        st.warning(f"An unexpected error occurred fetching data for {symbol}: {e}")
+        return None
 
-        st.subheader(f"{ticker} Valuation vs Historical")
-        st.metric("Current P/E", round(pe_current, 1) if pe_current is not None else "N/A")
-        st.metric("5Y Avg P/E", pe_avg, delta=round(pe_current - pe_avg, 1) if pe_current is not None else "N/A")
-    except:
-        st.warning("Could not fetch historical P/E data.")
+if run_analysis and ticker:
+    # 1. Fetch peer data from Finnhub
+    peers_data = fetch_company_peers(ticker)
+
+    if not peers_data:
+        st.warning("No peer data returned from Finnhub. Analyzing only the entered ticker for historical data.")
+        all_symbols = [ticker]
+    else:
+        unique_peers = [sym for sym in peers_data if sym != ticker]
+        # Ensure the main ticker is always the first in all_symbols for structured display later
+        all_symbols = [ticker] + unique_peers[:10] # Limit to 10 peers + main ticker for max 11 symbols
+
+    st.write(f"✅ Symbols for analysis: {', '.join(all_symbols)}")
+
+    peer_ratios = []
+    # Collect data for all symbols including the main ticker for the overall table
+    for sym in all_symbols:
+        data = fetch_basic_financials(sym)
+        if data and 'metric' in data:
+            record = data['metric']
+            peer_ratios.append({
+                "Symbol": sym,
+                "P/E (TTM)": record.get("peTTM"),
+                "P/B (TTM)": record.get("pbQuarterly"),
+                "ROE (TTM)": record.get("roeTTM"),
+                "ROA (TTM)": record.get("roaTTM"),
+            })
+        else:
+            if data is not None:
+                st.warning(f"No metric data found for {sym}.")
+
+    if not peer_ratios:
+        st.error("No comparable ratio data found for any symbol.")
+    else:
+        selected_peers_df = pd.DataFrame(peer_ratios)
+        st.subheader("Peer Valuation Comparison (Current TTM Ratios)")
+        st.dataframe(selected_peers_df.set_index("Symbol").round(1))
+
+        # Filter out the main ticker for mean and median calculations
+        peers_only_df = selected_peers_df[selected_peers_df["Symbol"] != ticker]
+
+        if not peers_only_df.empty:
+            peer_means = peers_only_df.mean(numeric_only=True).to_dict()
+            peer_medians = peers_only_df.median(numeric_only=True).to_dict()
+
+            st.subheader(f"Mean and Median Ratios for Peers (excluding {ticker})")
+            st.write("### Mean Ratios")
+            mean_df = pd.DataFrame([peer_means])
+            mean_df.index = ["Mean"] # Set index for display
+            st.dataframe(mean_df.round(1))
+
+            st.write("### Median Ratios")
+            median_df = pd.DataFrame([peer_medians])
+            median_df.index = ["Median"] # Set index for display
+            st.dataframe(median_df.round(1))
+        else:
+            st.warning("No peer data available to calculate mean and median ratios (after excluding the main ticker).")
+
+    # 2. Find historical P/E for the input stock
+    st.subheader(f"Historical P/E Analysis for {ticker}")
+    historical_data = fetch_basic_financials(ticker) # Use the cached function
+
+    if historical_data and 'series' in historical_data and 'quarterly' in historical_data['series'] and 'peTTM' in historical_data['series']['quarterly']:
+        pe_history_raw = historical_data['series']['quarterly']['peTTM']
+
+        # Extract 'v' values and take the first 20 elements
+        pe_values = [item['v'] for item in pe_history_raw if 'v' in item]
+
+        if len(pe_values) >= 20:
+            pe_values_for_average = pe_values[0:20]
+            average_pe = np.mean(pe_values_for_average)
+
+            st.metric(label=f"Current P/E (TTM) for {ticker}", value=f"{historical_data['metric']['peTTM']:.1f}")
+            st.metric(label=f"Average P/E (most recent 20 periods) for {ticker}", value=f"{average_pe:.1f}", delta=f"{historical_data['metric']['peTTM'] - average_pe:.1f}")
+
+            # Display the periods and values used for the average
+            df_display = pd.DataFrame(pe_history_raw[0:20])
+            st.write("Historical P/E (TTM) Values used for average:")
+            st.dataframe(df_display.rename(columns={'period': 'Period', 'v': 'P/E (TTM)'}))
+        else:
+            st.warning(f"Not enough P/E history (less than 20 periods) to calculate the average for {ticker}.")
+    else:
+        st.warning(f"No historical P/E data found for {ticker}.")

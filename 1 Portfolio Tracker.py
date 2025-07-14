@@ -73,6 +73,20 @@ st.title("Tony's Portfolio Tracker")
 
 # 1. Portfolio Overview
 st.subheader("Portfolio Overview")
+
+# Calculate total portfolio value
+total_portfolio_value = aggregated["Total Value"].sum()
+total_portfolio_cost = aggregated["Total Cost"].sum()
+total_portfolio_gain_loss = total_portfolio_value - total_portfolio_cost
+
+st.write(f"**Total Portfolio Value:** ${total_portfolio_value:,.2f}")
+
+# Display total portfolio gain/loss with color based on value
+if total_portfolio_gain_loss >= 0:
+    st.markdown(f"**Total Portfolio Gain/Loss:** <span style='color:green;'>${total_portfolio_gain_loss:,.2f}</span>", unsafe_allow_html=True)
+else:
+    st.markdown(f"**Total Portfolio Gain/Loss:** <span style='color:red;'>${total_portfolio_gain_loss:,.2f}</span>", unsafe_allow_html=True)
+
 styled = aggregated.round(1).style.applymap(highlight_gains, subset=["Gain $", "Gain %"])
 st.dataframe(styled.format({
     "Shares": "{:.2f}",
@@ -114,15 +128,16 @@ else:
 st.subheader("Trade History")
 st.dataframe(df_trades.sort_values("Date", ascending=False).round(1))
 
-## Plan for Future Portfolio ✨
+## Future Portfolio Plan
 st.subheader("Future Portfolio Plan")
+st.write("This proposed portfolio allocation for US investments focuses on growth with some defensive elements. This plan will be adjusted based on market conditions and personal goals.")
 
 # Technology
 with st.expander("1. Technology (30%) - AI & Cloud Dominance"):
     st.markdown("""
     **Objective:** Focus on companies leading in Artificial Intelligence (AI) and cloud computing, key drivers of market growth.
-    - **AI Infrastructure:** **NVDA** (NVIDIA), **SMCI** (Super Micro Computer), **ANET** (Arista Networks)
-    - **Cloud & Software:** **MSFT** (Microsoft), **GOOGL** (Alphabet - Google), **CRWD** (CrowdStrike)
+    - **AI Infrastructure:** **NVDA** (NVIDIA),  :green[**ANET** (Arista Networks)]
+    - **Cloud & Software:** :green[**MSFT** (Microsoft)], :green[**GOOGL** (Alphabet - Google)]
     """)
 
 # Industrials

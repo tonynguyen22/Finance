@@ -13,7 +13,7 @@ def extract_sentiment(insights):
 
 st.title("Sentiment Monitor")
 
-symbol = st.text_input("Enter Ticker", value="AAPL").upper()
+symbol = st.text_input("Enter Ticker").upper()
 run_analysis = st.button("Go")
 
 if run_analysis and symbol:

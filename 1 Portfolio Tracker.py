@@ -189,7 +189,7 @@ with st.expander("7. Consumer Staples (10%) - Stability & Essential Goods"):
     """)
 
 # Consumer Discretionary
-with st.expander("8. Consumer Discretionary (5%) - E-commerce & Lifestyle"):
+with st.expander("8. Consumer Discretionary (10%) - E-commerce & Lifestyle"):
     st.markdown("""
     **Objective:** Invest in companies benefiting from consumer spending on non-essential products and services, particularly e-commerce and travel.
     - **E-commerce & Brands:** :green[**AMZN** (Amazon.com)]

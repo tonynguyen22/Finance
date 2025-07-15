@@ -6,3 +6,4 @@ plotly
 streamlit==1.40.1
 yfinance
 matplotlib
+finnhub

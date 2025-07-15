@@ -136,7 +136,7 @@ st.write("This proposed portfolio allocation for US investments focuses on growt
 with st.expander("1. Technology (30%) - AI & Cloud Dominance"):
     st.markdown("""
     **Objective:** Focus on companies leading in Artificial Intelligence (AI) and cloud computing, key drivers of market growth.
-    - **AI Infrastructure:** green[**NVDA** (NVIDIA)],  :green[**ANET** (Arista Networks)], :green[**TSM** (Taiwan Semiconductor Manufacturing)]
+    - **AI Infrastructure:** :green[**NVDA** (NVIDIA)],  :green[**ANET** (Arista Networks)], :green[**TSM** (Taiwan Semiconductor Manufacturing)]
     - **Cloud & Software:** :green[**MSFT** (Microsoft)], :green[**GOOGL** (Alphabet - Google)]
     """)
 
@@ -145,15 +145,15 @@ with st.expander("2. Industrials (15%) - Logistics & Automation"):
     st.markdown("""
     **Objective:** Benefit from industrial automation trends, infrastructure investment, and the development of digital supply chains.
     - **Logistics & Automation:** :green[**GXO** (GXO Logistics)], :green[**TDG** (TransDigm Group)]
-    - **Infrastructure:** yellow[**CAT** (Caterpillar)]
+    - **Infrastructure:** :yellow[**CAT** (Caterpillar)]
     """)
 
 # Financials
 with st.expander("3. Financials (15%) - Payments & Diversified Services"):
     st.markdown("""
     **Objective:** Bet on the growth of electronic transactions and the stability of large financial institutions.
-    - **Payments:** green[**V** (Visa)]
-    - **Diversified Financials:** green[**JPM** (JPMorgan Chase)]
+    - **Payments:** :green[**V** (Visa)]
+    - **Diversified Financials:** :green[**JPM** (JPMorgan Chase)]
     """)
 
 # Communication Services
@@ -168,8 +168,8 @@ with st.expander("4. Communication Services (10%) - Digital Content & Connectivi
 with st.expander("5. Healthcare (10%) - Innovation & Stability"):
     st.markdown("""
     **Objective:** A defensive sector with growth potential driven by biotech innovation and medical devices.
-    - **Biotech & Pharma:** green[**LLY** (Eli Lilly)]
-    - **Medical Devices:** green[**ABT** (Abbott Laboratories)]
+    - **Biotech & Pharma:** :green[**LLY** (Eli Lilly)]
+    - **Medical Devices:** :green[**ABT** (Abbott Laboratories)]
     """)
 
 # Utilities & Renewable Energy

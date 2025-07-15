@@ -133,7 +133,7 @@ st.subheader("Future Portfolio Plan")
 st.write("This proposed portfolio allocation for US investments focuses on growth with some defensive elements. This plan will be adjusted based on market conditions and personal goals.")
 
 # Technology
-with st.expander("1. Technology (25%) - AI & Cloud Dominance"):
+with st.expander("1. Technology (20%) - AI & Cloud Dominance"):
     st.markdown("""
     **Objective:** Focus on companies leading in Artificial Intelligence (AI) and cloud computing, key drivers of market growth.
     - **AI Infrastructure:** :green[**NVDA** (NVIDIA)],  :green[**ANET** (Arista Networks)], :green[**TSM** (Taiwan Semiconductor Manufacturing)]
@@ -176,8 +176,8 @@ with st.expander("5. Healthcare (10%) - Innovation & Stability"):
 with st.expander("6. Utilities & Renewable Energy (10%) - Powering the Future"):
     st.markdown("""
     **Objective:** Benefit from increasing energy demand (especially from AI data centers) and the global shift towards clean energy.
-    - **Utilities:** **NEE** (NextEra Energy), **DUK** (Duke Energy)
-    - **Renewable Energy:** **FSLR** (First Solar), **ENPH** (Enphase Energy)
+    - **Utilities:** **DUK** (Duke Energy)
+    - **Renewable Energy (Pure Play):** **FSLR** (First Solar), **ENPH** (Enphase Energy), :orange[**ICLN** (iShares Global Clean Energy ETF)]
     """)
 
 # Consumer Staples
@@ -194,6 +194,7 @@ with st.expander("8. Consumer Discretionary (5%) - E-commerce & Lifestyle"):
     **Objective:** Invest in companies benefiting from consumer spending on non-essential products and services, particularly e-commerce and travel.
     - **E-commerce & Brands:** :green[**AMZN** (Amazon.com)]
     - **Travel & Leisure:** :green[**MAR** (Marriott International)]
+    - **Experiential Retail:** :green[**SBUX** (Starbucks)]
     """)
 
 

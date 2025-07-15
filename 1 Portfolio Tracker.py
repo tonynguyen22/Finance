@@ -133,7 +133,7 @@ st.subheader("Future Portfolio Plan")
 st.write("This proposed portfolio allocation for US investments focuses on growth with some defensive elements. This plan will be adjusted based on market conditions and personal goals.")
 
 # Technology
-with st.expander("1. Technology (30%) - AI & Cloud Dominance"):
+with st.expander("1. Technology (25%) - AI & Cloud Dominance"):
     st.markdown("""
     **Objective:** Focus on companies leading in Artificial Intelligence (AI) and cloud computing, key drivers of market growth.
     - **AI Infrastructure:** :green[**NVDA** (NVIDIA)],  :green[**ANET** (Arista Networks)], :green[**TSM** (Taiwan Semiconductor Manufacturing)]
@@ -145,7 +145,7 @@ with st.expander("2. Industrials (15%) - Logistics & Automation"):
     st.markdown("""
     **Objective:** Benefit from industrial automation trends, infrastructure investment, and the development of digital supply chains.
     - **Logistics & Automation:** :green[**GXO** (GXO Logistics)], :green[**TDG** (TransDigm Group)]
-    - **Infrastructure:** :yellow[**CAT** (Caterpillar)]
+    - **Infrastructure:** :orange[**CAT** (Caterpillar)]
     """)
 
 # Financials
@@ -180,10 +180,20 @@ with st.expander("6. Utilities & Renewable Energy (10%) - Powering the Future"):
     - **Renewable Energy:** **FSLR** (First Solar), **ENPH** (Enphase Energy)
     """)
 
+# Consumer Staples
+with st.expander("7. Consumer Staples (10%) - Stability & Essential Goods"):
+    st.markdown("""
+    **Objective:** Provide portfolio stability, consistent income, and defensiveness by investing in companies producing essential goods consumed regardless of economic conditions.
+    - **Household & Personal Care:** :green[**PG** (Procter & Gamble)]
+    - **Food & Beverage:** :green[**KO** (Coca-Cola)]
+    """)
+
 # Consumer Discretionary
-with st.expander("7. Consumer Discretionary (10%) - E-commerce & Lifestyle"):
+with st.expander("8. Consumer Discretionary (5%) - E-commerce & Lifestyle"):
     st.markdown("""
     **Objective:** Invest in companies benefiting from consumer spending on non-essential products and services, particularly e-commerce and travel.
-    - **E-commerce & Brands:** **AMZN** (Amazon.com), **LULU** (Lululemon Athletica)
-    - **Travel & Leisure:** **BKNG** (Booking Holdings), **MAR** (Marriott International)
+    - **E-commerce & Brands:** :green[**AMZN** (Amazon.com)]
+    - **Travel & Leisure:** :green[**MAR** (Marriott International)]
     """)
+
+

@@ -142,21 +142,24 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
         with col9:
             empty_lines(3)
             st.write("")
-            st.metric(label="D/E Ratio", value = round(metrics_data['D/E ratio'][0],2), delta=delta(metrics_data,'D/E ratio'))
+            st.metric(label="Range", value=company_data['Range'])
             st.write("")
-            st.metric(label="ROE", value = str(round(metrics_data['ROE'][0] * 100, 2)) + '%', delta=delta(metrics_data,'ROE'))
-
-        with col10:
-            empty_lines(3)
-            st.metric(label="Working Capital", value = millify(metrics_data['Working Capital'][0], precision = 2), delta=delta(metrics_data,'Working Capital'))
-            st.write("")
-            st.metric(label="P/E Ratio", value = round(metrics_data['P/E Ratio'][0],2), delta=delta(metrics_data,'P/E Ratio'))
-            st.write("")
+            st.metric(label="Average Volume", value=millify(company_data['Average Volume'], precision=2))
             # Check if the company pays dividends
             if metrics_data['Dividend Yield'][0] == 0:
                 st.metric(label="Dividends (yield)", value = '0')
             else:
                 st.metric(label="Dividends (yield)", value = str(round(metrics_data['Dividend Yield'][0]* 100, 2)) + '%', delta=delta(metrics_data,'Dividend Yield'))
+        with col10:
+            empty_lines(3)
+            st.metric(label="Ceo", value=company_data['CEO'])
+            st.write("")
+            st.metric(label="Founded", value=company_data['Founded'])
+            st.write("")
+            st.metric(label="Employees", value=millify(company_data['Employees'], precision=0))
+            st.write("")
+            st.metric(label="Location", value=company_data['Location'])
+            
         
 
         # Configure the plots bar

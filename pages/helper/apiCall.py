@@ -60,7 +60,7 @@ def get_company_info(symbol: str) -> dict:
             "Description": data['description'],
             "CEO": data['ceo'],
             "Range": data['range'],
-            "Location": data['city'] + ', ' + data['state'] + ',' + data['country'],
+            "Location": data['city'] + ', ' + data['state'] + ',' + data['Country'],
             "Founded": data['ipoDate'],
             "Employees": data['fullTimeEmployees'],
         }

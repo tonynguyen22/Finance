@@ -60,7 +60,7 @@ def get_company_info(symbol: str) -> dict:
             "Description": data['description'],
             "CEO": data['ceo'],
             "Range": data['range'],
-            "Location": data['city'] + ', ' + data['state'] + ',' + data['Country'],
+            "Location": data['city'] + ', ' + data['state'] + ', ' + data['country'],
             "Founded": data['ipoDate'],
             "Employees": data['fullTimeEmployees'],
         }
@@ -154,14 +154,27 @@ def get_income_statement(symbol: str) -> pd.DataFrame:
             income_statement_data.append({
                 'Year': year,
                 'Revenue': (report['revenue']),
-                '(-) Cost of Revenue': (report['costOfRevenue']),
-                '= Gross Profit': (report['grossProfit']),
-                '(-) Operating Expense': (report['operatingExpenses']),
-                '= Operating Income': (report['operatingIncome']),
-                '(+-) Other Income/Expenses': (report['totalOtherIncomeExpensesNet']),
-                '= Income Before Tax': (report['incomeBeforeTax']),                
-                '(+-) Tax Income/Expense': (report['incomeTaxExpense']),
-                '= Net Income': (report['netIncome']),
+                'Cost of Revenue': (report['costOfRevenue']),
+                'Gross Profit': (report['grossProfit']),
+                'Gross Profit Margin': (report['grossProfitRatio']), 
+                'Research & Development Expenses': report['researchAndDevelopmentExpenses'],
+                'Selling, General & Administrative Expenses': (report['sellingGeneralAndAdministrativeExpenses']),
+                'Operating Expense': (report['operatingExpenses']),
+                'Operating Income': (report['operatingIncome']),
+                'Operating Income Ratio': (report['operatingIncomeRatio']), 
+                'Interest Income': report['interestIncome'], 
+                'Interest Expense': report['interestExpense'], 
+                'Depreciation & Amortization': report['depreciationAndAmortization'], 
+                'EBITDA': report['ebitda'], 
+                'EBITDA Ratio': (report['ebitdaratio']), 
+                'Other Income/Expenses': (report['totalOtherIncomeExpensesNet']),
+                'Income Before Tax': (report['incomeBeforeTax']),
+                'Income Before Tax Ratio': (report['incomeBeforeTaxRatio']), 
+                'Tax Income/Expense': (report['incomeTaxExpense']),
+                'Net Income': (report['netIncome']),
+                'Net Income Ratio': (report['netIncomeRatio']), 
+                'EPS': (report['eps']), 
+                'EPS Diluted': (report['epsdiluted']),
             })
 
         # create a Pandas DataFrame from the list of dictionaries and return it
@@ -176,7 +189,6 @@ def get_income_statement(symbol: str) -> pd.DataFrame:
     except ValueError as e:
         print(f"Error occurred while parsing JSON response: {e}")
         return None
-
 
 def get_balance_sheet(symbol: str) -> pd.DataFrame:
     """

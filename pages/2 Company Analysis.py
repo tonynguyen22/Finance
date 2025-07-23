@@ -83,7 +83,7 @@ symbol_input = st.text_input("Enter a stock ticker").upper()
 
 # Check if the "Go" button has been clicked
 if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
-    
+
     # Check if the user has entered a valid ticker symbol
     if not symbol_input:
         st.warning('Please input a ticker.')
@@ -94,14 +94,16 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
         company_data = get_company_info(symbol_input)
         metrics_data = key_metrics(symbol_input)
         income_data = income_statement(symbol_input)
+        income_data = income_data.sort_index(ascending=True)
         performance_data = stock_price(symbol_input)
         ratios_data = financial_ratios(symbol_input)
         balance_sheet_data = balance_sheet(symbol_input)
         cashflow_data = cash_flow(symbol_input)
 
-    except Exception:
+    except Exception as e: # Modified to capture and display exception
         st.error('Not possible to retrieve data for that ticker. Please check if its valid and try again.')
-        sys.exit()
+        st.exception(e) # Display the full exception traceback in Streamlit
+        st.stop() # Use st.stop() instead of sys.exit() for Streamlit apps
 
     # Display dashboard
     empty_lines(2)
@@ -124,32 +126,29 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
 
         with col4:
             empty_lines(1)
-            generate_card(company_data['Industry'])            
+            generate_card(company_data['Industry'])
             empty_lines(2)
 
         # Define columns for key metrics and IS
-        col8, col9, col10 = st.columns((2,2,3))
+        col8, col9, col10 = st.columns((3,3,4))
         with col8:
             empty_lines(3)
-            st.metric(label="Price (USD)", value=millify(company_data['Price'], precision=2), delta=company_data['Price change'])
+            st.metric(label="Price (USD)", value=millify(company_data['Price'], precision=2))
             st.write("")
             st.metric(label="Market Cap", value=millify(metrics_data['Market Cap'][0], precision=2))
             st.write("")
+            st.metric(label="Range", value=company_data['Range'])
+        # Display key metrics
+        with col9:
+            empty_lines(3)
             st.metric(label="Beta", value=round(company_data['Beta'],2))
             st.write("")
             st.metric(label="Average Volume", value=millify(company_data['Average Volume'], precision=2))
-        # Display key metrics  
-        with col9:
-            empty_lines(3)
             st.write("")
-            st.metric(label="Range", value=company_data['Range'])
-            st.write("")
-            st.metric(label="Average Volume", value=millify(company_data['Average Volume'], precision=2))
-            # Check if the company pays dividends
             if metrics_data['Dividend Yield'][0] == 0:
                 st.metric(label="Dividends (yield)", value = '0')
             else:
-                st.metric(label="Dividends (yield)", value = str(round(metrics_data['Dividend Yield'][0]* 100, 2)) + '%', delta=delta(metrics_data,'Dividend Yield'))
+                st.metric(label="Dividends (yield)", value = str(round(metrics_data['Dividend Yield'][0]* 100, 2)) + '%')
         with col10:
             empty_lines(3)
             st.metric(label="Ceo", value=company_data['CEO'])
@@ -159,12 +158,11 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
             st.metric(label="Employees", value=millify(company_data['Employees'], precision=0))
             st.write("")
             st.metric(label="Location", value=company_data['Location'])
-            
-        
+
 
         # Configure the plots bar
         config = {
-            'displaylogo': False, 
+            'displaylogo': False,
             'modeBarButtonsToRemove': ['zoom2d', 'pan2d', 'select2d', 'lasso2d', 'hoverClosestCartesian', 'hoverCompareCartesian', 'autoScale2d', 'toggleSpikelines', 'resetScale2d', 'zoomIn2d', 'zoomOut2d', 'hoverClosest3d', 'hoverClosestGeo', 'hoverClosestGl2d', 'hoverClosestPie', 'toggleHover', 'resetViews', 'toggleSpikeLines', 'resetViewMapbox', 'resetGeo', 'hoverClosestGeo', 'sendDataToCloud', 'hoverClosestGl']
         }
 
@@ -172,13 +170,13 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
         # Determine the color of the line based on the first and last prices
         line_color = 'rgb(60, 179, 113)' if performance_data.iloc[0]['Price'] > performance_data.iloc[-1]['Price'] else 'rgb(255, 87, 48)'
 
-        # Create the line chart 
+        # Create the line chart (rename company line for clarity)
         fig = go.Figure(
             go.Scatter(
                 x=performance_data.index,
                 y=performance_data['Price'],
                 mode='lines',
-                name='Price',
+                name=f'{symbol_input} Price', # Changed name here
                 line=dict(color=line_color)
             )
         )
@@ -186,7 +184,7 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
         # Customize the chart layout
         fig.update_layout(
             title={
-                'text': 'Market Performance',
+                'text': 'Market Performance', 
             },
             dragmode='pan',
             xaxis=dict(
@@ -197,88 +195,293 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
             )
         )
 
-        # Render the line chart 
+        # Render the line chart
         st.plotly_chart(fig, config=config, use_container_width=True)
 
 
-        # Display net income
-        # Create the line chart 
-        fig = go.Figure()
-        fig.add_trace(
-            go.Scatter(
-                x=income_data.index, 
-                y=income_data["= Net Income"], 
-                mode="lines+markers", 
-                line=dict(
-                    color="purple"), 
-                    marker=dict(
-                        size=5
-                    )
-                )
-            )
+        st.header('1. Income Statement Analysis')
 
-        # Customize the chart layout
-        fig.update_layout(
-            title="Net Income",
+        # Create new columns for YoY Changes
+        income_data['Net Income YoY Change'] = round(income_data['Net Income'].pct_change() * 100, 2)
+        income_data['Revenue YoY Change'] = round(income_data['Revenue'].pct_change() * 100, 2)
+
+
+        # --- CHART: Display Revenue and YoY Growth ---
+        fig_revenue = go.Figure()
+
+        # Add Revenue bar trace
+        fig_revenue.add_trace(
+            go.Bar(
+                x=income_data.index,
+                y=income_data["Revenue"],
+                name="Revenue",
+                marker_color="rgba(30, 144, 255, 0.85)", # Color for Revenue bars
+            )
+        )
+
+        # Add Revenue YoY growth trace on a second Y-axis
+        fig_revenue.add_trace(
+            go.Scatter(
+                x=income_data['Revenue YoY Change'].dropna().index,
+                y=income_data['Revenue YoY Change'].dropna(),
+                mode="lines+markers",
+                name="Revenue YoY Growth",
+                yaxis='y2',
+                line=dict(color='rgba(173, 216, 230, 1)', width=2),
+                marker=dict(symbol='circle', size=8, color='rgba(173, 216, 230, 1)', line=dict(width=1, color='rgba(173, 216, 230, 1)'))
+            )
+        )
+
+        # Customize the chart layout for Revenue
+        fig_revenue.update_layout(
+            title="Revenue and YoY Growth",
             dragmode='pan',
             xaxis=dict(
-                tickmode='array', 
+                tickmode='array',
                 tickvals=income_data.index,
                 fixedrange=True
             ),
             yaxis=dict(
-                fixedrange=True
+                title="Revenue",
+                fixedrange=True,
+                automargin=True,
+                showgrid=True
             ),
+            yaxis2=dict(
+                title="YoY Growth (%)",
+                overlaying='y',
+                side='right',
+                fixedrange=True,
+                showgrid=False,
+                tickformat=".2f%",
+                automargin=True
+            ),
+            legend=dict(x=0, y=1.1, xanchor='left', orientation="h")
         )
 
-        # Display the graph
-        st.plotly_chart(fig, config=config, use_container_width=True)
+        # Display the Revenue graph
+        st.plotly_chart(fig_revenue, config=config, use_container_width=True)
 
 
-        # Display profitability margins
-        # Create an horizontal bar chart of profitability margins
+        # --- CHART: Display Net Income and YoY Growth ---
+        fig_net_income = go.Figure()
+
+        # Add Net Income bar trace
+        fig_net_income.add_trace(
+            go.Bar(
+                x=income_data.index,
+                y=income_data["Net Income"],
+                name="Net Income",
+                marker_color="rgba(30, 144, 255, 0.85)", # Color for Net Income bars
+            )
+        )
+
+        # Add Net Income YoY growth trace on a second Y-axis
+        fig_net_income.add_trace(
+            go.Scatter(
+                x=income_data['Net Income YoY Change'].dropna().index,
+                y=income_data['Net Income YoY Change'].dropna(),
+                mode="lines+markers",
+                name="Net Income YoY Growth",
+                yaxis='y2',
+                line=dict(color='rgba(173, 216, 230, 1)', width=2),
+                marker=dict(symbol='circle', size=8, color='rgba(173, 216, 230, 1)', line=dict(width=1, color='rgba(173, 216, 230, 1)'))
+            )
+        )
+
+        # Customize the chart layout for Net Income
+        fig_net_income.update_layout(
+            title="Net Income and YoY Growth",
+            dragmode='pan',
+            xaxis=dict(
+                tickmode='array',
+                tickvals=income_data.index,
+                fixedrange=True
+            ),
+            yaxis=dict(
+                title="Net Income",
+                fixedrange=True,
+                automargin=True,
+                showgrid=True
+            ),
+            yaxis2=dict(
+                title="YoY Growth (%)",
+                overlaying='y',
+                side='right',
+                fixedrange=True,
+                showgrid=False,
+                tickformat=".2f%",
+                automargin=True
+            ),
+            legend=dict(x=0, y=1.1, xanchor='left', orientation="h")
+        )
+
+        # Display the Net Income graph
+        st.plotly_chart(fig_net_income, config=config, use_container_width=True)
+
+
+        #Display profitability margins over time
+        # Create the line chart for profitability ratios
         fig = go.Figure()
-        fig.add_trace(go.Bar(
-            y=ratios_data.index,
-            x=ratios_data['Gross Profit Margin'],
+
+        # Gross Profit Margin
+        fig.add_trace(go.Scatter(
+            x=income_data.index, # X-axis is now Year
+            y=income_data['Gross Profit Margin'],
+            mode='lines+markers', # Changed to line chart
             name='Gross Profit Margin',
-            marker=dict(color='rgba(60, 179, 113, 0.85)'),
-            orientation='h',
-        ))
-        fig.add_trace(go.Bar(
-            y=ratios_data.index,
-            x=ratios_data['Operating Profit Margin'],
-            name='EBIT Margin',
-            marker=dict(color='rgba(30, 144, 255, 0.85)'),
-            orientation='h',
+            line=dict(color='rgba(60, 179, 113, 0.85)'), # Greenish color for the line
+            marker=dict(size=5) # Add markers to points
         ))
 
-        fig.add_trace(go.Bar(
-            y=ratios_data.index,
-            x=ratios_data['Net Profit Margin'],
+        # Net Profit Margin
+        fig.add_trace(go.Scatter(
+            x=income_data.index, # X-axis is now Year
+            y=income_data['Net Income Ratio'],
+            mode='lines+markers', # Changed to line chart
             name='Net Profit Margin',
-            marker=dict(color='rgba(173, 216, 230, 0.85)'),
-            orientation='h',
+            line=dict(color='rgba(173, 216, 230, 0.85)'), # Light blue color for the line
+            marker=dict(size=5)
+        ))
+
+        # EBITDA Ratio (Added as requested)
+        fig.add_trace(go.Scatter(
+            x=income_data.index, # X-axis is now Year
+            y=income_data['EBITDA Ratio'],
+            mode='lines+markers', # Changed to line chart
+            name='EBITDA Ratio',
+            line=dict(color='rgba(255, 140, 0, 0.85)'), # Orange color for the line
+            marker=dict(size=5)
         ))
 
         # Update layout
         fig.update_layout(
-            title='Profitability Margins',
-            bargap=0.1,
+            title='Profitability Ratios Over Time', # Updated chart title
             dragmode='pan',
-            xaxis=dict(
+            xaxis=dict( # Configure X-axis for Years
+                title="Year", # Title for the X-axis
                 fixedrange=True,
-                tickformat='.0%'
+                tickmode='array',
+                tickvals=income_data.index # Ensures all years in the index are displayed as ticks
             ),
-            yaxis=dict(
-            fixedrange=True
-             )
+            yaxis=dict( # Configure Y-axis for Margins (percentages)
+                title="Margin (%)", # Title for the Y-axis
+                fixedrange=True,
+                tickformat='.0%', # Format as percentage
+            ),
+            legend=dict(x=0, y=1.1, xanchor='left', orientation="h") # Keep legend configuration
         )
 
-        # Display the plot 
+        # Display the plot
         st.plotly_chart(fig, config=config, use_container_width=True)
 
 
+        # Display expenses
+        # --- CHART: Stacked Bar Chart of Annual Expense Composition
+        fig_expenses = go.Figure()
+
+        # Add Research & Development Expenses trace
+        fig_expenses.add_trace(go.Bar(
+            x=income_data.index,
+            y=income_data['Research & Development Expenses'],
+            name='R&D Expenses',
+            marker_color='rgba(54, 162, 235, 0.85)' # A blue-ish color
+        ))
+
+        # Add Selling, General & Administrative Expenses trace
+        fig_expenses.add_trace(go.Bar(
+            x=income_data.index,
+            y=income_data['Selling, General & Administrative Expenses'],
+            name='SG&A Expenses',
+            marker_color='rgba(255, 206, 86, 0.85)' # A yellow-ish color
+        ))
+
+        # --- New traces for Option 2 ---
+        # Add Interest Expense trace
+        fig_expenses.add_trace(go.Bar(
+            x=income_data.index,
+            y=income_data['Interest Expense'],
+            name='Interest Expense',
+            marker_color='rgba(153, 102, 255, 0.85)' # A purple-ish color
+        ))
+
+        # Add Depreciation & Amortization trace
+        fig_expenses.add_trace(go.Bar(
+            x=income_data.index,
+            y=income_data['Depreciation & Amortization'],
+            name='Depreciation & Amortization',
+            marker_color='rgba(75, 192, 192, 0.85)' # A teal-ish color
+        ))
+        # --- End of new traces for Option 2 ---
+
+        # Update layout for stacked bar chart
+        fig_expenses.update_layout(
+            barmode='stack', # This is key for a stacked bar chart
+            title='Annual Expense Composition',
+            xaxis=dict(
+                title="Year",
+                tickmode='array',
+                tickvals=income_data.index,
+                fixedrange=True
+            ),
+            yaxis=dict(
+                title="Amount",
+                fixedrange=True,
+            ),
+            legend=dict(x=0, y=1.1, xanchor='left', orientation="h")
+        )
+
+        st.plotly_chart(fig_expenses, config=config, use_container_width=True)
+
+        # --- NEW CHART: EPS vs EPS Diluted ---
+        st.subheader("EPS vs EPS Diluted")
+        fig_eps = go.Figure()
+
+        # Add EPS trace
+        fig_eps.add_trace(go.Scatter(
+            x=income_data.index,
+            y=income_data['EPS'],
+            mode='lines+markers',
+            name='EPS',
+            line=dict(color='deepskyblue'), # A light blue color for EPS
+            marker=dict(size=5)
+        ))
+
+        # Add EPS Diluted trace
+        fig_eps.add_trace(go.Scatter(
+            x=income_data.index,
+            y=income_data['EPS Diluted'],
+            mode='lines+markers',
+            name='EPS Diluted',
+            line=dict(color='orange', dash='dash'), # A dashed purple line for Diluted EPS
+            marker=dict(size=5)
+        ))
+
+        # Update layout
+        fig_eps.update_layout(
+            title='EPS vs EPS Diluted Over Time',
+            dragmode='pan',
+            xaxis=dict(
+                title="Year",
+                tickmode='array',
+                tickvals=income_data.index,
+                fixedrange=True
+            ),
+            yaxis=dict(
+                title="EPS Value",
+                fixedrange=True,
+                tickformat=".2f" # Format to 2 decimal places for currency/value
+            ),
+            legend=dict(x=0, y=1.1, xanchor='left', orientation="h")
+        )
+
+        st.plotly_chart(fig_eps, config=config, use_container_width=True)
+
+
+
+
+
+        st.header('2. Balance Sheet Analysis')
         #Display balance sheet
         # Create a vertical bar chart of Assets and Liabilities
         fig = go.Figure()
@@ -317,15 +520,16 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
             ),
                 yaxis=dict(
                 fixedrange=True,
-             )
+            ),
+            legend=dict(x=0, y=1.1, xanchor='left', orientation="h")
         )
 
-        # Display the plot 
+        # Display the plot
         st.plotly_chart(fig, config=config, use_container_width=True)
 
 
         # Display ROE and ROA
-        # Create the line chart 
+        # Create the line chart
         fig = go.Figure()
         fig.add_trace(go.Scatter(
             x=ratios_data.index,
@@ -350,7 +554,8 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
             yaxis=dict(
                 fixedrange=True,
                 tickformat='.0%'
-            )
+            ),
+            legend=dict(x=0, y=1.1, xanchor='left', orientation="h")
         )
 
         # Display the plot in Streamlit
@@ -402,13 +607,14 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
             ),
             yaxis=dict(
                 fixedrange=True,
-            )
+            ),
+            legend=dict(x=0, y=1.1, xanchor='left', orientation="h")
         )
 
-        # Display the plot 
+        # Display the plot
         st.plotly_chart(fig, config=config, use_container_width=True)
 
-        #Display financial ratios table 
+        #Display financial ratios table
         empty_lines(1)
         st.markdown('**Financial Ratios**')
         # Rename keys and format values as needed
@@ -418,7 +624,7 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
             'Operating Cycle': 'Operating Cycle (days)',
             'Days of Payables Outstanding': 'Days of Payables Outstanding (days)',
             'Cash Conversion Cycle': 'Cash Conversion Cycle (days)',
-            'Gross Profit Margin': 'Gross Profit Margin (%)', 
+            'Gross Profit Margin': 'Gross Profit Margin (%)',
             'Operating Profit Margin': 'Operating Profit Margin (%)',
             'Pretax Profit Margin': 'Pretax Profit Margin (%)',
             'Net Profit Margin': 'Net Profit Margin (%)',
@@ -441,7 +647,7 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
                 ratios_table[col] = ratios_table[col] * 100
 
         ratios_table = round(ratios_table.T,2)
-        
+
 
         ratios_table = ratios_table.sort_index(axis=1, ascending=True)
 
@@ -450,6 +656,7 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
 
     except Exception as e:
         st.error('Not possible to develop dashboard. Please try again.')
+        st.exception(e) # Display full exception for debugging
         sys.exit()
 
     #Add download button
@@ -463,20 +670,21 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
             .set_index('Key')
         )
         metrics_data = metrics_data.round(2).T
-        income_data = income_data.round(2)
+        income_data = income_data.round(2) # Keep original income_data for download after yoy calculation
         ratios_data = ratios_data.round(2).T
         balance_sheet_data = balance_sheet_data.round(2).T
         cashflow_data = cashflow_data.T
 
         # Clean up income statement column names and transpose dataframe
+        # Ensure 'Net Income YoY Change' column is also cleaned if needed
         income_data.columns = income_data.columns.str.replace(r'[\/\(\)\-\+=]\s?', '', regex=True)
         income_data = income_data.T
 
         # Combine all dataframes into a dictionary
         dfs = {
             'Stock': company_data,
-            'Market Performance': performance_data,    
-            'Income Statement': income_data,
+            'Market Performance': performance_data,
+            'Income Statement': income_data, # Use the income_data with YoY change
             'Balance Sheet': balance_sheet_data,
             'Cash flow': cashflow_data,
             'Key Metrics': metrics_data,
@@ -511,5 +719,6 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
             file_name=symbol_input + '_financial_data.xlsx',
             mime='application/octet-stream'
         )
-    except Exception:
+    except Exception as e: # Added e for full exception display
         st.info('Data not available for download')
+        st.exception(e) # Display full exception for debugging

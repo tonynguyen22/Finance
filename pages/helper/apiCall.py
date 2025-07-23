@@ -60,7 +60,7 @@ def get_company_info(symbol: str) -> dict:
             "Description": data['description'],
             "CEO": data['ceo'],
             "Range": data['range'],
-            "Location": data['city'] + ', ' + data['state'] + ', ' + data['country'],
+            "Location": data['city'] + ', ' + data['state'] + ', ' + data['country'] if data['city'] and data['state'] else data['country'],
             "Founded": data['ipoDate'],
             "Employees": data['fullTimeEmployees'],
         }
@@ -223,13 +223,50 @@ def get_balance_sheet(symbol: str) -> pd.DataFrame:
             year = report['calendarYear']
             balance_sheet_data.append({
                 'Year': year,
-                'Assets': report['totalAssets'],
-                'Current Assets': report['totalCurrentAssets'],
-                'Non-Current Assets': report['totalNonCurrentAssets'],
-                'Current Liabilities': report['totalCurrentLiabilities'],
-                'Non-Current Liabilities': report['totalNonCurrentLiabilities'],
-                'Liabilities': report['totalLiabilities'],
-                'Equity': report['totalEquity']
+                'Cash And Cash Equivalents': report['cashAndCashEquivalents'],
+                'Short Term Investments': report['shortTermInvestments'],
+                'Cash And Short Term Investments': report['cashAndShortTermInvestments'],
+                'Net Receivables': report['netReceivables'],
+                'Inventory': report['inventory'],
+                'Other Current Assets': report['otherCurrentAssets'],
+                'Total Current Assets': report['totalCurrentAssets'],
+                'Property Plant Equipment Net': report['propertyPlantEquipmentNet'],
+                'Goodwill': report['goodwill'],
+                'Intangible Assets': report['intangibleAssets'],
+                'Goodwill And Intangible Assets': report['goodwillAndIntangibleAssets'],
+                'Long Term Investments': report['longTermInvestments'],
+                'Tax Assets': report['taxAssets'],
+                'Other Non Current Assets': report['otherNonCurrentAssets'],
+                'Total Non Current Assets': report['totalNonCurrentAssets'],
+                'Other Assets': report['otherAssets'],
+                'Total Assets': report['totalAssets'],
+                'Account Payables': report['accountPayables'],
+                'Short Term Debt': report['shortTermDebt'],
+                'Tax Payables': report['taxPayables'],
+                'Deferred Revenue': report['deferredRevenue'],
+                'Other Current Liabilities': report['otherCurrentLiabilities'],
+                'Total Current Liabilities': report['totalCurrentLiabilities'],
+                'Long Term Debt': report['longTermDebt'],
+                'Deferred Revenue Non Current': report['deferredRevenueNonCurrent'],
+                'Deferred Tax Liabilities Non Current': report['deferredTaxLiabilitiesNonCurrent'],
+                'Other Non Current Liabilities': report['otherNonCurrentLiabilities'],
+                'Total Non Current Liabilities': report['totalNonCurrentLiabilities'],
+                'Other Liabilities': report['otherLiabilities'],
+                'Capital Lease Obligations': report['capitalLeaseObligations'],
+                'Total Liabilities': report['totalLiabilities'],
+                'Preferred Stock': report['preferredStock'],
+                'Common Stock': report['commonStock'],
+                'Retained Earnings': report['retainedEarnings'],
+                'Accumulated Other Comprehensive Income Loss': report['accumulatedOtherComprehensiveIncomeLoss'],
+                'Other Total Stockholders Equity': report['othertotalStockholdersEquity'],
+                'Total Stockholders Equity': report['totalStockholdersEquity'],
+                'Total Equity': report['totalEquity'],
+                'Total Liabilities And Stockholders Equity': report['totalLiabilitiesAndStockholdersEquity'],
+                'Minority Interest': report['minorityInterest'],
+                'Total Liabilities And Total Equity': report['totalLiabilitiesAndTotalEquity'],
+                'Total Investments': report['totalInvestments'],
+                'Total Debt': report['totalDebt'],
+                'Net Debt': report['netDebt']
             })
 
         # Create a Pandas DataFrame from the list of dictionaries and return it
@@ -241,7 +278,7 @@ def get_balance_sheet(symbol: str) -> pd.DataFrame:
         # If an error occurs, print the error message and return None
         print('Error getting balance sheet data:', e)
         return None
-    
+
 
 def get_cash_flow(symbol: str) -> pd.DataFrame:
     """

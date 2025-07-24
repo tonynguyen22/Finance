@@ -100,14 +100,13 @@ st.dataframe(styled.format({
 
 # 2. Sector Diversification Chart
 sector_map = {
-    "NU": "Fintech",
-    "GOOG": "Tech",
-    "SOXX": "Semis",
-    "TSM": "Semis",
-    "CVS": "Healthcare",
-    "GXO": "Logistics",
-    "QGEN": "Healthcare",
-    # Add more mappings for your current portfolio tickers if needed
+    "NU": "Financials",  # Fintech thường thuộc về Financials hoặc Technology, nhưng Financials rộng hơn và phù hợp với mục đích diversify.
+    "GOOG": "Communication Services", # Google (Alphabet) được phân loại vào Communication Services vì các dịch vụ internet và quảng cáo.
+    "SOXX": "Information Technology", # Semiconductors thuộc về Information Technology.
+    "TSM": "Information Technology", # Semiconductors thuộc về Information Technology.
+    "CVS": "Healthcare", # Healthcare vẫn là Healthcare.
+    "GXO": "Industrials", # Logistics thường thuộc về Industrials.
+    "QGEN": "Healthcare", # Healthcare vẫn là Healthcare.
 }
 
 aggregated["Sector"] = aggregated["Ticker"].map(sector_map)

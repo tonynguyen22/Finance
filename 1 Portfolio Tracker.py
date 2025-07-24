@@ -106,6 +106,7 @@ sector_map = {
     "TSM": "Semis",
     "CVS": "Healthcare",
     "GXO": "Logistics",
+    "QGEN": "Healthcare",
     # Add more mappings for your current portfolio tickers if needed
 }
 

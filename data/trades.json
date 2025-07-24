@@ -75,6 +75,13 @@
       "date": "2025-06-11",
       "shares": 11,
       "cost_share": 43.92
-    }
+    },
+    {
+      "ticker": "QGEN",
+      "company": "QIAGEN",
+      "date": "2025-07-23",
+      "shares": 3.989,
+      "cost_share": 50.14
+    },
   ]
   

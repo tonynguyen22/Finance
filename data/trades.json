@@ -52,7 +52,7 @@
       "ticker": "SOXX",
       "company": "iShares Semiconductor ETF",
       "date": "2025-06-10",
-      "shares": 2.21,
+      "shares": 1.178,
       "cost_share": 226.00
     },
     {
@@ -78,10 +78,24 @@
     },
     {
       "ticker": "QGEN",
-      "company": "QIAGEN",
+      "company": "Qiagen NV",
       "date": "2025-07-23",
       "shares": 3.989,
       "cost_share": 50.14
+    },
+    {
+      "ticker": "KO",
+      "company": "Coca-Cola Co",
+      "date": "2025-07-24",
+      "shares": 2,
+      "cost_share": 69.48
+    },
+    {
+      "ticker": "WMT",
+      "company": "Walmart Inc",
+      "date": "2025-07-24",
+      "shares": 1,
+      "cost_share": 96.65
     }
   ]
   

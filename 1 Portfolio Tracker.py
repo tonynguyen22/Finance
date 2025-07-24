@@ -102,11 +102,13 @@ st.dataframe(styled.format({
 sector_map = {
     "NU": "Financials",  # Fintech thường thuộc về Financials hoặc Technology, nhưng Financials rộng hơn và phù hợp với mục đích diversify.
     "GOOG": "Communication Services", # Google (Alphabet) được phân loại vào Communication Services vì các dịch vụ internet và quảng cáo.
-    "SOXX": "Information Technology", # Semiconductors thuộc về Information Technology.
-    "TSM": "Information Technology", # Semiconductors thuộc về Information Technology.
+    "SOXX": "Technology", # Semiconductors thuộc về Information Technology.
+    "TSM": "Technology", # Semiconductors thuộc về Information Technology.
     "CVS": "Healthcare", # Healthcare vẫn là Healthcare.
     "GXO": "Industrials", # Logistics thường thuộc về Industrials.
     "QGEN": "Healthcare", # Healthcare vẫn là Healthcare.
+    "WMT": "Consumer Staples", # Walmart là một công ty bán lẻ lớn, thuộc về Consumer Staples.
+    "KO": "Consumer Staples", # Coca-Cola là một công ty đồ uống lớn, thuộc về Consumer Staples.
 }
 
 aggregated["Sector"] = aggregated["Ticker"].map(sector_map)
@@ -136,16 +138,14 @@ st.write("This proposed portfolio allocation for US investments focuses on growt
 with st.expander("1. Technology (20%) - AI & Cloud Dominance"):
     st.markdown("""
     **Objective:** Focus on companies leading in Artificial Intelligence (AI) and cloud computing, key drivers of market growth.
-    - **AI Infrastructure:** :green[**NVDA** (NVIDIA)],  :green[**ANET** (Arista Networks)], :green[**TSM** (Taiwan Semiconductor Manufacturing)]
-    - **Cloud & Software:** :green[**MSFT** (Microsoft)], :green[**GOOGL** (Alphabet - Google)]
+    - **AI Infrastructure:** :green[**TSM** (Taiwan Semiconductor Manufacturing)], :green[**SOXX** (iShares Semiconductor ETF)]
     """)
 
 # Industrials
 with st.expander("2. Industrials (15%) - Logistics & Automation"):
     st.markdown("""
     **Objective:** Benefit from industrial automation trends, infrastructure investment, and the development of digital supply chains.
-    - **Logistics & Automation:** :green[**GXO** (GXO Logistics)], :green[**TDG** (TransDigm Group)]
-    - **Infrastructure:** :orange[**CAT** (Caterpillar)]
+    - **Logistics & Automation:** :green[**GXO** (GXO Logistics)]
     """)
 
 # Financials
@@ -160,16 +160,14 @@ with st.expander("3. Financials (15%) - Payments & Diversified Services"):
 with st.expander("4. Communication Services (10%) - Digital Content & Connectivity"):
     st.markdown("""
     **Objective:** Capture value from the explosion of digital content, online advertising, and user connectivity platforms.
-    - **Digital Content & Ads:**  **META** (Meta Platforms), **NFLX** (Netflix)
-    - **Networking:** **CMCSA** (Comcast)
+    - **Digital Content & Advertising:** :green[**GOOG** (Alphabet - Google)]
     """)
 
 # Healthcare
 with st.expander("5. Healthcare (10%) - Innovation & Stability"):
     st.markdown("""
     **Objective:** A defensive sector with growth potential driven by biotech innovation and medical devices.
-    - **Biotech & Pharma:** :green[**LLY** (Eli Lilly)]
-    - **Medical Devices:** :green[**ABT** (Abbott Laboratories)]
+    - **Biotech & Pharma:** :green[**CVS** (CVS Health), :green[**QGEN** (Qiagen NV)]
     """)
 
 # Utilities & Renewable Energy
@@ -184,7 +182,7 @@ with st.expander("6. Utilities & Renewable Energy (10%) - Powering the Future"):
 with st.expander("7. Consumer Staples (10%) - Stability & Essential Goods"):
     st.markdown("""
     **Objective:** Provide portfolio stability, consistent income, and defensiveness by investing in companies producing essential goods consumed regardless of economic conditions.
-    - **Household & Personal Care:** :green[**PG** (Procter & Gamble)]
+    - **Retail & Essentials:** :green[**WMT** (Walmart)]
     - **Food & Beverage:** :green[**KO** (Coca-Cola)]
     """)
 

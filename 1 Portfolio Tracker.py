@@ -167,7 +167,7 @@ with st.expander("4. Communication Services (10%) - Digital Content & Connectivi
 with st.expander("5. Healthcare (10%) - Innovation & Stability"):
     st.markdown("""
     **Objective:** A defensive sector with growth potential driven by biotech innovation and medical devices.
-    - **Biotech & Pharma:** :green[**CVS** (CVS Health), :green[**QGEN** (Qiagen NV)]
+    - **Biotech & Pharma:** :green[**CVS** (CVS Health)], :green[**QGEN** (Qiagen NV)]
     """)
 
 # Utilities & Renewable Energy

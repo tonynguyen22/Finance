@@ -938,7 +938,7 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
         # Display the ratios plot
         st.plotly_chart(fig_ratios, config=config, use_container_width=True)
 
-        # --- CHART 8: Debt to Equity Ratio ---
+        # --- CHART 8: Debt to Equity Ratio and Debt to Assets Ratio ---
         fig_debt_equity = go.Figure()
         # Add Debt to Equity Ratio trace
         fig_debt_equity.add_trace(go.Scatter(
@@ -948,8 +948,15 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
             line=dict(color='rgba(255, 99, 71, 0.85)'),
         ))
 
-        st.subheader('Debt to Equity Ratio Analysis')
-        # Update layout for Debt to Equity Ratio chart
+        # Add Debt to Assets Ratio trace
+        fig_debt_equity.add_trace(go.Scatter(
+            x=ratios_data.index,
+            y=ratios_data['Debt Ratio'],
+            name='Debt to Assets Ratio',
+            line=dict(color='rgba(255, 140, 0, 0.85)'),
+        ))
+        st.subheader('Debt Ratios Analysis')
+        # Update layout for Debt Ratios chart
         fig_debt_equity.update_layout(
             dragmode='pan',
             xaxis=dict(
@@ -964,7 +971,7 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
             ),
             legend=dict(x=0, y=1.3, xanchor='left', orientation="h")
         )
-        # Display the Debt to Equity Ratio plot
+        # Display the Debt Ratios plot
         st.plotly_chart(fig_debt_equity, config=config, use_container_width=True)
 
         # --- CHART 9: Valuation Ratios ---
@@ -1018,10 +1025,6 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
         # Display the Valuation Ratios plot
         st.plotly_chart(fig_valuation, config=config, use_container_width=True)
 
-
-        #Display financial ratios table
-        empty_lines(1)
-        st.markdown('**Financial Ratios**')
         # Rename keys and format values as needed
         ratios_table = ratios_data.rename(columns={
             'Days of Sales Outstanding': 'Days of Sales Outstanding (days)',
@@ -1057,7 +1060,7 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
         ratios_table = ratios_table.sort_index(axis=1, ascending=True)
 
         # Display ratios table
-        st.dataframe(ratios_table, width=800, height=400)
+        
 
     except Exception as e:
         st.error('Not possible to develop dashboard. Please try again.')

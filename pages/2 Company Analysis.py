@@ -232,10 +232,9 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
                 marker=dict(symbol='circle', size=8, color='rgba(173, 216, 230, 1)', line=dict(width=1, color='rgba(173, 216, 230, 1)'))
             )
         )
-
+        st.subheader('Revenue and YoY Growth Analysis')
         # Customize the chart layout for Revenue
         fig_revenue.update_layout(
-            title="Revenue and YoY Growth",
             dragmode='pan',
             xaxis=dict(
                 tickmode='array',
@@ -257,11 +256,63 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
                 tickformat=".2f%",
                 automargin=True
             ),
-            legend=dict(x=0, y=1.1, xanchor='left', orientation="h")
+            legend=dict(x=0, y=1.3, xanchor='left', orientation="h")
         )
 
         # Display the Revenue graph
         st.plotly_chart(fig_revenue, config=config, use_container_width=True)
+
+        # --- CHART: Display COGS and % of Revenue ---
+        fig_cogs = go.Figure()
+        # Add COGS bar trace
+        fig_cogs.add_trace(
+            go.Bar(
+                x=income_data.index,
+                y=income_data["Cost of Revenue"],
+                name="COGS",
+                marker_color="rgba(255, 99, 71, 0.85)", # Color for COGS bars
+            )
+        )
+        # Add COGS as a percentage of Revenue trace on a second Y-axis
+        fig_cogs.add_trace(
+            go.Scatter(
+                x=income_data.index,
+                y=(round(income_data["Cost of Revenue"] / income_data["Revenue"], 2) * 100).dropna(),
+                mode="lines+markers",
+                name="COGS as % of Revenue",
+                yaxis='y2',
+                line=dict(color='rgba(255, 160, 122, 1)', width=2),
+                marker=dict(symbol='circle', size=8, color='rgba(255, 160, 122, 1)', line=dict(width=1, color='rgba(255, 160, 122, 1)'))
+            )
+        )
+        st.subheader('COGS and COGS as % of Revenue Analysis')
+        # Customize the chart layout for COGS
+        fig_cogs.update_layout(
+            dragmode='pan',
+            xaxis=dict(
+                tickmode='array',
+                tickvals=income_data.index,
+                fixedrange=True
+            ),
+            yaxis=dict(
+                title="COGS",
+                fixedrange=True,
+                automargin=True,
+                showgrid=True
+            ),
+            yaxis2=dict(
+                title="COGS as % of Revenue",
+                overlaying='y',
+                side='right',
+                fixedrange=True,
+                showgrid=False,
+                tickformat=".2f%",
+                automargin=True
+            ),
+            legend=dict(x=0, y=1.3, xanchor='left', orientation="h")
+        )
+        # Display the COGS graph
+        st.plotly_chart(fig_cogs, config=config, use_container_width=True)
 
 
         # --- CHART: Display Net Income and YoY Growth ---
@@ -289,10 +340,9 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
                 marker=dict(symbol='circle', size=8, color='rgba(173, 216, 230, 1)', line=dict(width=1, color='rgba(173, 216, 230, 1)'))
             )
         )
-
+        st.subheader('Net Income and YoY Growth Analysis')
         # Customize the chart layout for Net Income
         fig_net_income.update_layout(
-            title="Net Income and YoY Growth",
             dragmode='pan',
             xaxis=dict(
                 tickmode='array',
@@ -314,7 +364,7 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
                 tickformat=".2f%",
                 automargin=True
             ),
-            legend=dict(x=0, y=1.1, xanchor='left', orientation="h")
+            legend=dict(x=0, y=1.3, xanchor='left', orientation="h")
         )
 
         # Display the Net Income graph
@@ -354,10 +404,9 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
             line=dict(color='rgba(255, 140, 0, 0.85)'), # Orange color for the line
             marker=dict(size=5)
         ))
-
+        st.subheader('Profitability Margins Over Time')
         # Update layout
         fig.update_layout(
-            title='Profitability Ratios Over Time', # Updated chart title
             dragmode='pan',
             xaxis=dict( # Configure X-axis for Years
                 title="Year", # Title for the X-axis
@@ -370,7 +419,7 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
                 fixedrange=True,
                 tickformat='.0%', # Format as percentage
             ),
-            legend=dict(x=0, y=1.1, xanchor='left', orientation="h") # Keep legend configuration
+            legend=dict(x=0, y=1.3, xanchor='left', orientation="h") # Keep legend configuration
         )
 
         # Display the plot
@@ -414,11 +463,10 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
             marker_color='rgba(75, 192, 192, 0.85)' # A teal-ish color
         ))
         # --- End of new traces for Option 2 ---
-
+        st.subheader('Annual Expense Composition')
         # Update layout for stacked bar chart
         fig_expenses.update_layout(
             barmode='stack', # This is key for a stacked bar chart
-            title='Annual Expense Composition',
             xaxis=dict(
                 title="Year",
                 tickmode='array',
@@ -430,7 +478,7 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
                 fixedrange=True,
             ),
             hovermode='x unified',
-            legend=dict(x=0, y=1.1, xanchor='left', orientation="h")
+            legend=dict(x=0, y=1.3, xanchor='left', orientation="h")
         )
 
         st.plotly_chart(fig_expenses, config=config, use_container_width=True)
@@ -457,10 +505,9 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
             line=dict(color='orange', dash='dash'), # A dashed purple line for Diluted EPS
             marker=dict(size=5)
         ))
-
+        st.subheader('Earnings Per Share (EPS) Analysis')
         # Update layout
         fig_eps.update_layout(
-            title='EPS vs EPS Diluted Over Time',
             dragmode='pan',
             xaxis=dict(
                 title="Year",
@@ -473,7 +520,7 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
                 fixedrange=True,
                 tickformat=".2f" # Format to 2 decimal places for currency/value
             ),
-            legend=dict(x=0, y=1.1, xanchor='left', orientation="h")
+            legend=dict(x=0, y=1.3, xanchor='left', orientation="h")
         )
 
         st.plotly_chart(fig_eps, config=config, use_container_width=True)
@@ -510,10 +557,9 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
                 name=component.replace('And', ' & ').replace('Net', 'Net ').replace('Other', 'Other '),
                 marker=dict(color=current_asset_colors[i % len(current_asset_colors)]),
             ))
-
+        st.subheader('Current Assets Breakdown by Year')
         fig_current_assets.update_layout(
             barmode='stack',
-            title='Current Assets Analysis by Year',
             xaxis=dict(
                 title='Year',
                 tickmode='array',
@@ -527,7 +573,7 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
                 automargin=True,
                 showgrid=True
             ),
-            legend=dict(x=0, y=1.1, xanchor='left', orientation="h"),
+            legend=dict(x=0, y=1.3, xanchor='left', orientation="h"),
             hovermode='x unified'
         )
         st.plotly_chart(fig_current_assets, config=config, use_container_width=True)
@@ -562,10 +608,9 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
                 name=component.replace('And', ' & ').replace('Net', 'Net ').replace('NonCurrent', 'Non-Current '),
                 marker=dict(color=non_current_asset_colors[i % len(non_current_asset_colors)]),
             ))
-
+        st.subheader('Long-term Assets Breakdown by Year')
         fig_non_current_assets.update_layout(
             barmode='stack',
-            title='Long-term Assets Analysis by Year',
             xaxis=dict(
                 title='Year',
                 tickmode='array',
@@ -578,7 +623,7 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
                 automargin=True,
                 showgrid=True
             ),
-            legend=dict(x=0, y=1.1, xanchor='left', orientation="h"),
+            legend=dict(x=0, y=1.3, xanchor='left', orientation="h"),
             hovermode='x unified'
         )
         st.plotly_chart(fig_non_current_assets, config=config, use_container_width=True)
@@ -608,9 +653,10 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
                 name=component.replace('And', ' & ').replace('Net', 'Net ').replace('Other', 'Other '),
                 marker=dict(color=current_liability_colors[i % len(current_liability_colors)]),
             ))
+
+        st.subheader('Current Liabilities Breakdown by Year')
         fig_current_liabilities.update_layout(
             barmode='stack',
-            title='Current Liabilities Analysis by Year',
             xaxis=dict(
                 title='Year',
                 tickmode='array',
@@ -623,7 +669,7 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
                 automargin=True,
                 showgrid=True
             ),
-            legend=dict(x=0, y=1.1, xanchor='left', orientation="h"),
+            legend=dict(x=0, y=1.3, xanchor='left', orientation="h"),
             hovermode='x unified'
         )
         st.plotly_chart(fig_current_liabilities, config=config, use_container_width=True)
@@ -652,9 +698,10 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
                 name=component.replace('And', ' & ').replace('Net', 'Net ').replace('NonCurrent', 'Non-Current '),
                 marker=dict(color=long_term_liability_colors[i % len(long_term_liability_colors)]),
             ))
+
+        st.subheader('Long-term Liabilities Breakdown by Year')
         fig_long_term_liabilities.update_layout(
             barmode='stack',
-            title='Long-term Liabilities Analysis by Year',
             xaxis=dict(
                 title='Year',
                 tickmode='array',
@@ -667,11 +714,93 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
                 automargin=True,
                 showgrid=True
             ),
-            legend=dict(x=0, y=1.1, xanchor='left', orientation="h"),
+            legend=dict(x=0, y=1.3, xanchor='left', orientation="h"),
             hovermode='x unified'
         )
         st.plotly_chart(fig_long_term_liabilities, config=config, use_container_width=True)
 
+        # --- CHART 5: Shareholders' Equity Breakdown ---
+        equity_components = [
+            'Preferred Stock',
+            'Common Stock',
+            'Retained Earnings',
+            'Accumulated Other Comprehensive Income Loss',
+            'Other Total Stockholders Equity'
+        ]
+        equity_colors = [
+            'rgba(60, 179, 113, 0.85)',   # MediumSeaGreen
+            'rgba(100, 149, 237, 0.85)',  # CornflowerBlue
+            'rgba(255, 160, 122, 0.85)',  # LightSalmon
+            'rgba(240, 230, 140, 0.85)',  # Khaki
+            'rgba(173, 216, 230, 0.85)'   # LightBlue
+        ]
+        fig_equity = go.Figure()
+        for i, component in enumerate(equity_components):
+            fig_equity.add_trace(go.Bar(
+                x=balance_sheet_data.index,
+                y=balance_sheet_data[component],
+                name=component.replace('And', ' & ').replace('Net', 'Net ').replace('Other', 'Other '),
+                marker=dict(color=equity_colors[i % len(equity_colors)]),
+            ))
+        
+        st.subheader('Shareholders\' Equity Breakdown by Year')
+        #create space between title and legend
+        fig_equity.update_layout(
+            barmode='stack',
+            xaxis=dict(
+                title='Year',
+                tickmode='array',
+                tickvals=balance_sheet_data.index,
+                fixedrange=True
+            ),
+            yaxis=dict(
+                title='Equity Value (USD)',
+                fixedrange=True,
+                automargin=True,
+                showgrid=True
+            ),
+            legend=dict(x=0, y=1.3, xanchor='left', orientation="h",yanchor='top'),
+            hovermode='x unified'
+        )
+        st.plotly_chart(fig_equity, config=config, use_container_width=True)
+
+        # --- CHART 6: Total Liabilities and Equity ---
+        fig_total_liabilities_equity = go.Figure()
+        # Add Total Liabilities trace
+        fig_total_liabilities_equity.add_trace(go.Bar(
+            x=balance_sheet_data.index,
+            y=balance_sheet_data['Total Liabilities'],
+            name='Total Liabilities',
+            marker_color='rgba(255, 99, 71, 0.85)'  # Tomato color for Total Liabilities
+        ))
+        # Add Total Equity trace
+        fig_total_liabilities_equity.add_trace(go.Bar(
+            x=balance_sheet_data.index,
+            y=balance_sheet_data['Total Equity'],
+            name='Total Equity',
+            marker_color='rgba(60, 179, 113, 0.85)'  # MediumSeaGreen color for Total Equity
+        ))
+
+        st.subheader('Total Liabilities and Equity by Year')
+        # Update layout for Total Liabilities and Equity chart
+        fig_total_liabilities_equity.update_layout(
+            barmode='group',  # Grouped bar chart
+            xaxis=dict(
+                title='Year',
+                tickmode='array',
+                tickvals=balance_sheet_data.index,
+                fixedrange=True
+            ),
+            yaxis=dict(
+                title='Value (USD)',
+                fixedrange=True,
+                automargin=True,
+                showgrid=True
+            ),
+            legend=dict(x=0, y=1.3, xanchor='left', orientation="h"),
+            hovermode='x unified'
+        )
+        st.plotly_chart(fig_total_liabilities_equity, config=config, use_container_width=True)
 
         # Display ROE and ROA
         # Create the line chart
@@ -689,18 +818,21 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
             line=dict(color='rgba(30, 144, 255, 0.85)'),
         ))
 
+        st.subheader('Return on Equity (ROE) and Return on Assets (ROA)')
         # Update layout
         fig.update_layout(
-            title='ROE and ROA',
             dragmode='pan',
             xaxis=dict(
+                title='Year',
+                tickmode='array',
+                tickvals=balance_sheet_data.index,
                 fixedrange=True
             ),
             yaxis=dict(
                 fixedrange=True,
                 tickformat='.0%'
             ),
-            legend=dict(x=0, y=1.1, xanchor='left', orientation="h")
+            legend=dict(x=0, y=1.3, xanchor='left', orientation="h")
         )
 
         # Display the plot in Streamlit
@@ -708,6 +840,8 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
 
 
         # Display cash flows
+
+        st.header('3. Cash Flow Analysis')
         # Create a vertical bar chart of Cash flows
         fig = go.Figure()
         fig.add_trace(go.Bar(
@@ -743,9 +877,9 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
             marker=dict(symbol='circle', size=5, color='rgba(255, 140, 0, 1)', line=dict(width=0.8, color='rgba(255, 140, 0, 1)'))
         ))
 
+        st.subheader('Cash Flows Analysis')
         # Update layout
         fig.update_layout(
-            title='Cash flows',
             bargap=0.1,
                 xaxis=dict(
                 fixedrange=True,
@@ -753,11 +887,137 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
             yaxis=dict(
                 fixedrange=True,
             ),
-            legend=dict(x=0, y=1.1, xanchor='left', orientation="h")
+            legend=dict(x=0, y=1.3, xanchor='left', orientation="h")
         )
 
         # Display the plot
         st.plotly_chart(fig, config=config, use_container_width=True)
+
+        st.header('4. Financial Ratios Analysis')
+        # Display financial ratios
+        # --- CHART 7: Current Ratio and Quick Ratio and Cash Ratio ---
+        fig_ratios = go.Figure()
+        # Add Current Ratio trace
+        fig_ratios.add_trace(go.Scatter
+            (x=ratios_data.index,
+            y=ratios_data['Current Ratio'],
+            name='Current Ratio',
+            line=dict(color='rgba(60, 179, 113, 0.85)'),
+        ))
+        # Add Quick Ratio trace
+        fig_ratios.add_trace(go.Scatter
+            (x=ratios_data.index,
+            y=ratios_data['Quick Ratio'],
+            name='Quick Ratio',
+            line=dict(color='rgba(30, 144, 255, 0.85)'),
+        ))
+        # Add Cash Ratio trace
+        fig_ratios.add_trace(go.Scatter
+            (x=ratios_data.index,
+            y=ratios_data['Cash Ratio'],
+            name='Cash Ratio',
+            line=dict(color='rgba(173, 216, 230, 0.85)'),
+        ))
+
+        st.subheader('Liquidity Ratios Analysis')
+        # Update layout for ratios chart
+        fig_ratios.update_layout(
+            dragmode='pan',
+            xaxis=dict(
+                title='Year',
+                tickmode='array',
+                tickvals=balance_sheet_data.index,
+                fixedrange=True
+            ),
+            yaxis=dict(
+                fixedrange=True,
+                tickformat='.2f'
+            ),
+            legend=dict(x=0, y=1.3, xanchor='left', orientation="h")
+        )
+        # Display the ratios plot
+        st.plotly_chart(fig_ratios, config=config, use_container_width=True)
+
+        # --- CHART 8: Debt to Equity Ratio ---
+        fig_debt_equity = go.Figure()
+        # Add Debt to Equity Ratio trace
+        fig_debt_equity.add_trace(go.Scatter(
+            x=ratios_data.index,
+            y=ratios_data['Debt Equity Ratio'],
+            name='Debt to Equity Ratio',
+            line=dict(color='rgba(255, 99, 71, 0.85)'),
+        ))
+
+        st.subheader('Debt to Equity Ratio Analysis')
+        # Update layout for Debt to Equity Ratio chart
+        fig_debt_equity.update_layout(
+            dragmode='pan',
+            xaxis=dict(
+                title='Year',
+                tickmode='array',
+                tickvals=balance_sheet_data.index,
+                fixedrange=True
+            ),
+            yaxis=dict(
+                fixedrange=True,
+                tickformat='.2f'
+            ),
+            legend=dict(x=0, y=1.3, xanchor='left', orientation="h")
+        )
+        # Display the Debt to Equity Ratio plot
+        st.plotly_chart(fig_debt_equity, config=config, use_container_width=True)
+
+        # --- CHART 9: Valuation Ratios ---
+        fig_valuation = go.Figure()
+        # Add Price to Earnings Ratio trace
+        fig_valuation.add_trace(go.Scatter(
+            x=ratios_data.index,
+            y=ratios_data['Price to Earnings Ratio'],
+            name='Price to Earnings Ratio',
+            line=dict(color='rgba(60, 179, 113, 0.85)'),
+        ))
+        # Add Price to Book Ratio trace
+        fig_valuation.add_trace(go.Scatter(
+            x=ratios_data.index,
+            y=ratios_data['Price to Book Value Ratio'],
+            name='Price to Book Ratio',
+            line=dict(color='rgba(30, 144, 255, 0.85)'),
+        ))
+        # Add Price to Sales Ratio trace
+        fig_valuation.add_trace(go.Scatter(
+            x=ratios_data.index,
+            y=ratios_data['Price to Sales Ratio'],
+            name='Price to Sales Ratio',
+            line=dict(color='rgba(173, 216, 230, 0.85)'),
+        ))
+
+        # Add Enterprise Value to EBITDA Ratio trace
+        fig_valuation.add_trace(go.Scatter(
+            x=ratios_data.index,
+            y=ratios_data['Enterprise Value to EBITDA'],
+            name='EV to EBITDA Ratio',
+            line=dict(color='rgba(255, 140, 0, 0.85)'),
+        ))
+
+        st.subheader('Valuation Ratios Analysis')
+        # Update layout for Valuation Ratios chart
+        fig_valuation.update_layout(
+            dragmode='pan',
+            xaxis=dict(
+                title='Year',
+                tickmode='array',
+                tickvals=balance_sheet_data.index,
+                fixedrange=True
+            ),
+            yaxis=dict(
+                fixedrange=True,
+                tickformat='.2f'
+            ),
+            legend=dict(x=0, y=1.3, xanchor='left', orientation="h")
+        )
+        # Display the Valuation Ratios plot
+        st.plotly_chart(fig_valuation, config=config, use_container_width=True)
+
 
         #Display financial ratios table
         empty_lines(1)

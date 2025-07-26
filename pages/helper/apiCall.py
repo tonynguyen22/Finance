@@ -412,7 +412,7 @@ def get_financial_ratios(symbol: str) -> pd.DataFrame:
 
         # Extract the ratios data from the list of dictionaries
         for report in response_data:
-            year = report['date'].split('-')[0]
+            year = report['calendarYear']
             ratios_data.append({
                 'Year': year,
                 'Current Ratio': report['currentRatio'],

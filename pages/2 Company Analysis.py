@@ -429,6 +429,7 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
                 title="Amount",
                 fixedrange=True,
             ),
+            hovermode='x unified',
             legend=dict(x=0, y=1.1, xanchor='left', orientation="h")
         )
 
@@ -479,8 +480,6 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
 
 
 
-
-        st.write(balance_sheet_data)
 
         st.header('2. Balance Sheet Analysis')
 
@@ -584,43 +583,94 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
         )
         st.plotly_chart(fig_non_current_assets, config=config, use_container_width=True)
 
-        # Giữ lại biểu đồ Liabilities and Equity hiện có của bạn
-        # Create a vertical bar chart of Liabilities and Equity
-        fig = go.Figure()
-        fig.add_trace(go.Bar(
-            x=balance_sheet_data.index,
-            y=balance_sheet_data['Total Liabilities'],
-            name='Liabilities',
-            marker=dict(color='rgba(255, 99, 71, 0.85)'),
-            width=0.3,
-        ))
 
-        # Add a line for Equity
-        fig.add_trace(go.Scatter(
-            x=balance_sheet_data.index,
-            y=balance_sheet_data['Total Equity'], # Đảm bảo dùng 'Total Equity'
-            mode='lines+markers',
-            name='Equity',
-            line=dict(color='rgba(173, 216, 230, 1)', width=2),
-            marker=dict(symbol='circle', size=8, color='rgba(173, 216, 230, 1)', line=dict(width=1, color='rgba(173, 216, 230, 1)'))
-        ))
 
-        # Update layout
-        fig.update_layout(
-            title='Liabilities and Equity',
-            bargap=0.4,
-            dragmode='pan',
+        # --- CHART 3: Current Liabilities Breakdown ---
+        current_liability_components = [
+            'Account Payables',
+            'Short Term Debt',
+            'Tax Payables',
+            'Deferred Revenue',
+            'Other Current Liabilities'
+        ]
+        current_liability_colors = [
+            'rgba(255, 99, 71, 0.85)',    # Tomato
+            'rgba(60, 179, 113, 0.85)',   # MediumSeaGreen
+            'rgba(100, 149, 237, 0.85)',  # CornflowerBlue
+            'rgba(255, 160, 122, 0.85)',  # LightSalmon
+            'rgba(173, 216, 230, 0.85)'   # LightBlue
+        ]
+        fig_current_liabilities = go.Figure()
+        for i, component in enumerate(current_liability_components):
+            fig_current_liabilities.add_trace(go.Bar(
+                x=balance_sheet_data.index,
+                y=balance_sheet_data[component],
+                name=component.replace('And', ' & ').replace('Net', 'Net ').replace('Other', 'Other '),
+                marker=dict(color=current_liability_colors[i % len(current_liability_colors)]),
+            ))
+        fig_current_liabilities.update_layout(
+            barmode='stack',
+            title='Current Liabilities Analysis by Year',
             xaxis=dict(
+                title='Year',
+                tickmode='array',
+                tickvals=balance_sheet_data.index,
                 fixedrange=True
             ),
             yaxis=dict(
+                title='Liability Value (USD)',
                 fixedrange=True,
+                automargin=True,
+                showgrid=True
             ),
-            legend=dict(x=0, y=1.2, xanchor='left', orientation="h")
+            legend=dict(x=0, y=1.1, xanchor='left', orientation="h"),
+            hovermode='x unified'
         )
+        st.plotly_chart(fig_current_liabilities, config=config, use_container_width=True)
 
-        # Display the plot
-        st.plotly_chart(fig, config=config, use_container_width=True)
+
+
+        # --- CHART 4: Long-term Liabilities Breakdown ---
+        long_term_liability_components = [
+            'Long Term Debt',
+            'Deferred Revenue Non Current',
+            'Deferred Tax Liabilities Non Current',
+            'Other Non Current Liabilities'
+        ]
+
+        long_term_liability_colors = [
+            'rgba(123, 104, 238, 0.85)',  # MediumPurple
+            'rgba(205, 92, 92, 0.85)',    # IndianRed
+            'rgba(255, 215, 0, 0.85)',    # Gold
+            'rgba(72, 61, 139, 0.85)'     # DarkSlateBlue
+        ]
+        fig_long_term_liabilities = go.Figure()
+        for i, component in enumerate(long_term_liability_components):
+            fig_long_term_liabilities.add_trace(go.Bar(
+                x=balance_sheet_data.index,
+                y=balance_sheet_data[component],
+                name=component.replace('And', ' & ').replace('Net', 'Net ').replace('NonCurrent', 'Non-Current '),
+                marker=dict(color=long_term_liability_colors[i % len(long_term_liability_colors)]),
+            ))
+        fig_long_term_liabilities.update_layout(
+            barmode='stack',
+            title='Long-term Liabilities Analysis by Year',
+            xaxis=dict(
+                title='Year',
+                tickmode='array',
+                tickvals=balance_sheet_data.index,
+                fixedrange=True
+            ),
+            yaxis=dict(
+                title='Liability Value (USD)',
+                fixedrange=True,
+                automargin=True,
+                showgrid=True
+            ),
+            legend=dict(x=0, y=1.1, xanchor='left', orientation="h"),
+            hovermode='x unified'
+        )
+        st.plotly_chart(fig_long_term_liabilities, config=config, use_container_width=True)
 
 
         # Display ROE and ROA

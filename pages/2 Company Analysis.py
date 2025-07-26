@@ -67,7 +67,7 @@ def delta(df,key):
 config_menu_footer()
 
 # Display the app title
-st.title("Financial Dashboard 📈")
+st.title("Company Analysis 📈")
 
 # Initialize the state of the button as False when the app is first loaded
 if 'btn_clicked' not in st.session_state:

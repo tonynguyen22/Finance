@@ -938,6 +938,58 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
         # Display the ratios plot
         st.plotly_chart(fig_ratios, config=config, use_container_width=True)
 
+
+        # Cash conversion cycle
+        # --- CHART 8: Cash Conversion Cycle ---
+        fig_cash_conversion = go.Figure()
+        # Add Days of Sales Outstanding trace
+        fig_cash_conversion.add_trace(go.Scatter(
+            x=ratios_data.index,
+            y=ratios_data['Days of Sales Outstanding'],
+            name='Days of Sales Outstanding',
+            line=dict(color='rgba(60, 179, 113, 0.85)'),
+        ))
+        # Add Days of Inventory Outstanding trace
+        fig_cash_conversion.add_trace(go.Scatter(
+            x=ratios_data.index,
+            y=ratios_data['Days of Inventory Outstanding'],
+            name='Days of Inventory Outstanding',
+            line=dict(color='rgba(30, 144, 255, 0.85)'),
+        ))
+        # Add Days of Payables Outstanding trace
+        fig_cash_conversion.add_trace(go.Scatter(
+            x=ratios_data.index,
+            y=ratios_data['Days of Payables Outstanding'],
+            name='Days of Payables Outstanding',
+            line=dict(color='rgba(173, 216, 230, 0.85)'),
+        ))
+        # Add Cash Conversion Cycle trace
+        fig_cash_conversion.add_trace(go.Scatter(
+            x=ratios_data.index,
+            y=ratios_data['Cash Conversion Cycle'],
+            name='Cash Conversion Cycle',
+            line=dict(color='rgba(255, 140, 0, 0.85)'),
+        ))
+        st.subheader('Cash Conversion Cycle Analysis')
+        # Update layout for Cash Conversion Cycle chart
+        fig_cash_conversion.update_layout(
+            dragmode='pan',
+            xaxis=dict(
+                title='Year',
+                tickmode='array',
+                tickvals=balance_sheet_data.index,
+                fixedrange=True
+            ),
+            yaxis=dict(
+                fixedrange=True,
+                tickformat='.2f'
+            ),
+            legend=dict(x=0, y=1.3, xanchor='left', orientation="h")
+        )
+        # Display the Cash Conversion Cycle plot
+        st.plotly_chart(fig_cash_conversion, config=config, use_container_width=True)
+
+        
         # --- CHART 8: Debt to Equity Ratio and Debt to Assets Ratio ---
         fig_debt_equity = go.Figure()
         # Add Debt to Equity Ratio trace

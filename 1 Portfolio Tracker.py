@@ -109,6 +109,7 @@ sector_map = {
     "QGEN": "Healthcare", # Healthcare vẫn là Healthcare.
     "WMT": "Consumer Staples", # Walmart là một công ty bán lẻ lớn, thuộc về Consumer Staples.
     "KO": "Consumer Staples", # Coca-Cola là một công ty đồ uống lớn, thuộc về Consumer Staples.
+    "SN": "Consumer Cyclical",
 }
 
 aggregated["Sector"] = aggregated["Ticker"].map(sector_map)

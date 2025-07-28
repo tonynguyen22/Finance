@@ -73,7 +73,7 @@
       "ticker": "GXO",
       "company": "GXO Logistics Inc",
       "date": "2025-06-11",
-      "shares": 11,
+      "shares": 11.384,
       "cost_share": 43.92
     },
     {
@@ -96,6 +96,13 @@
       "date": "2025-07-24",
       "shares": 1,
       "cost_share": 96.65
+    },
+    {
+      "ticker": "SN",
+      "company": "SharkNinja Inc",
+      "date": "2025-07-28",
+      "shares": 1.243,
+      "cost_share": 120.65
     }
   ]
   

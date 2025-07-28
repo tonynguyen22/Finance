@@ -190,6 +190,7 @@ def get_income_statement(symbol: str) -> pd.DataFrame:
         print(f"Error occurred while parsing JSON response: {e}")
         return None
 
+
 def get_balance_sheet(symbol: str) -> pd.DataFrame:
     """
     Retrieves the balance sheet data for a given stock symbol.

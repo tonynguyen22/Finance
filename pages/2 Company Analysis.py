@@ -200,7 +200,7 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
         st.plotly_chart(fig, config=config, use_container_width=True)
 
 
-        st.header('1. Income Statement Analysis')
+        st.header('1. Income Statement')
 
         # Create new columns for YoY Changes
         income_data['Net Income YoY Change'] = round(income_data['Net Income'].pct_change() * 100, 2)
@@ -232,7 +232,7 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
                 marker=dict(symbol='circle', size=8, color='rgba(173, 216, 230, 1)', line=dict(width=1, color='rgba(173, 216, 230, 1)'))
             )
         )
-        st.subheader('Revenue and YoY Growth Analysis')
+        st.subheader('Revenue and YoY Growth')
         # Customize the chart layout for Revenue
         fig_revenue.update_layout(
             dragmode='pan',
@@ -281,11 +281,11 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
                 mode="lines+markers",
                 name="COGS as % of Revenue",
                 yaxis='y2',
-                line=dict(color='rgba(255, 160, 122, 1)', width=2),
-                marker=dict(symbol='circle', size=8, color='rgba(255, 160, 122, 1)', line=dict(width=1, color='rgba(255, 160, 122, 1)'))
+                line=dict(color='rgba(173, 216, 230, 1)', width=2),
+                marker=dict(symbol='circle', size=8, color='rgba(173, 216, 230, 1)', line=dict(width=1, color='rgba(173, 216, 230, 1)'))
             )
         )
-        st.subheader('COGS and COGS as % of Revenue Analysis')
+        st.subheader('COGS and COGS as % of Revenue')
         # Customize the chart layout for COGS
         fig_cogs.update_layout(
             dragmode='pan',
@@ -306,7 +306,6 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
                 side='right',
                 fixedrange=True,
                 showgrid=False,
-                tickformat=".2f%",
                 automargin=True
             ),
             legend=dict(x=0, y=1.3, xanchor='left', orientation="h")
@@ -340,7 +339,7 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
                 marker=dict(symbol='circle', size=8, color='rgba(173, 216, 230, 1)', line=dict(width=1, color='rgba(173, 216, 230, 1)'))
             )
         )
-        st.subheader('Net Income and YoY Growth Analysis')
+        st.subheader('Net Income and YoY Growth')
         # Customize the chart layout for Net Income
         fig_net_income.update_layout(
             dragmode='pan',
@@ -483,7 +482,7 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
 
         st.plotly_chart(fig_expenses, config=config, use_container_width=True)
 
-        # --- NEW CHART: EPS vs EPS Diluted ---
+        # --- NEW CHART: EPS vs EPS Diluted and dividend
         fig_eps = go.Figure()
 
         # Add EPS trace
@@ -505,7 +504,18 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
             line=dict(color='orange', dash='dash'), # A dashed purple line for Diluted EPS
             marker=dict(size=5)
         ))
-        st.subheader('Earnings Per Share (EPS) Analysis')
+
+        # Add Dividend Yield
+        fig_eps.add_trace(go.Scatter(
+            x=ratios_data.index,
+            y=round(ratios_data['Dividend Yield']*100,2),
+            mode='lines+markers',
+            name='Dividend Yield',
+            yaxis='y2',
+            line=dict(color='yellow'), 
+            marker=dict(size=5)
+        ))
+        st.subheader('Earnings Per Share (EPS) & Dividend Yield')
         # Update layout
         fig_eps.update_layout(
             dragmode='pan',
@@ -518,7 +528,15 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
             yaxis=dict(
                 title="EPS Value",
                 fixedrange=True,
-                tickformat=".2f" # Format to 2 decimal places for currency/value
+                tickformat=".2f"
+            ),
+            yaxis2=dict(
+                title="Dividend Yield (%)",
+                overlaying='y',
+                side='right',
+                fixedrange=True,
+                showgrid=False,
+                automargin=True
             ),
             legend=dict(x=0, y=1.3, xanchor='left', orientation="h")
         )
@@ -528,7 +546,7 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
 
 
 
-        st.header('2. Balance Sheet Analysis')
+        st.header('2. Balance Sheet')
 
         # --- CHART 1: Current Assets Breakdown ---
 
@@ -557,7 +575,7 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
                 name=component.replace('And', ' & ').replace('Net', 'Net ').replace('Other', 'Other '),
                 marker=dict(color=current_asset_colors[i % len(current_asset_colors)]),
             ))
-        st.subheader('Current Assets Breakdown by Year')
+        st.subheader('Current Assets Breakdown')
         fig_current_assets.update_layout(
             barmode='stack',
             xaxis=dict(
@@ -608,7 +626,7 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
                 name=component.replace('And', ' & ').replace('Net', 'Net ').replace('NonCurrent', 'Non-Current '),
                 marker=dict(color=non_current_asset_colors[i % len(non_current_asset_colors)]),
             ))
-        st.subheader('Long-term Assets Breakdown by Year')
+        st.subheader('Long-term Assets Breakdown')
         fig_non_current_assets.update_layout(
             barmode='stack',
             xaxis=dict(
@@ -654,7 +672,7 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
                 marker=dict(color=current_liability_colors[i % len(current_liability_colors)]),
             ))
 
-        st.subheader('Current Liabilities Breakdown by Year')
+        st.subheader('Current Liabilities Breakdown')
         fig_current_liabilities.update_layout(
             barmode='stack',
             xaxis=dict(
@@ -699,7 +717,7 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
                 marker=dict(color=long_term_liability_colors[i % len(long_term_liability_colors)]),
             ))
 
-        st.subheader('Long-term Liabilities Breakdown by Year')
+        st.subheader('Long-term Liabilities Breakdown')
         fig_long_term_liabilities.update_layout(
             barmode='stack',
             xaxis=dict(
@@ -743,7 +761,7 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
                 marker=dict(color=equity_colors[i % len(equity_colors)]),
             ))
         
-        st.subheader('Shareholders\' Equity Breakdown by Year')
+        st.subheader('Shareholders\' Equity Breakdown')
         #create space between title and legend
         fig_equity.update_layout(
             barmode='stack',
@@ -781,7 +799,7 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
             marker_color='rgba(60, 179, 113, 0.85)'  # MediumSeaGreen color for Total Equity
         ))
 
-        st.subheader('Total Liabilities and Equity by Year')
+        st.subheader('Total Liabilities and Equity')
         # Update layout for Total Liabilities and Equity chart
         fig_total_liabilities_equity.update_layout(
             barmode='group',  # Grouped bar chart
@@ -841,7 +859,7 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
 
         # Display cash flows
 
-        st.header('3. Cash Flow Analysis')
+        st.header('3. Cash Flow Statement')
         # Create a vertical bar chart of Cash flows
         fig = go.Figure()
         fig.add_trace(go.Bar(
@@ -893,7 +911,7 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
         # Display the plot
         st.plotly_chart(fig, config=config, use_container_width=True)
 
-        st.header('4. Financial Ratios Analysis')
+        st.header('4. Financial Ratios')
         # Display financial ratios
         # --- CHART 7: Current Ratio and Quick Ratio and Cash Ratio ---
         fig_ratios = go.Figure()
@@ -919,7 +937,7 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
             line=dict(color='rgba(173, 216, 230, 0.85)'),
         ))
 
-        st.subheader('Liquidity Ratios Analysis')
+        st.subheader('Liquidity Ratios')
         # Update layout for ratios chart
         fig_ratios.update_layout(
             dragmode='pan',
@@ -970,7 +988,7 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
             name='Cash Conversion Cycle',
             line=dict(color='rgba(255, 140, 0, 0.85)'),
         ))
-        st.subheader('Cash Conversion Cycle Analysis')
+        st.subheader('Cash Conversion Cycle')
         # Update layout for Cash Conversion Cycle chart
         fig_cash_conversion.update_layout(
             dragmode='pan',
@@ -1007,7 +1025,7 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
             name='Debt to Assets Ratio',
             line=dict(color='rgba(255, 140, 0, 0.85)'),
         ))
-        st.subheader('Debt Ratios Analysis')
+        st.subheader('Debt Ratios')
         # Update layout for Debt Ratios chart
         fig_debt_equity.update_layout(
             dragmode='pan',
@@ -1058,7 +1076,7 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
             line=dict(color='rgba(255, 140, 0, 0.85)'),
         ))
 
-        st.subheader('Valuation Ratios Analysis')
+        st.subheader('Valuation Ratios')
         # Update layout for Valuation Ratios chart
         fig_valuation.update_layout(
             dragmode='pan',
@@ -1076,42 +1094,6 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
         )
         # Display the Valuation Ratios plot
         st.plotly_chart(fig_valuation, config=config, use_container_width=True)
-
-        # Rename keys and format values as needed
-        ratios_table = ratios_data.rename(columns={
-            'Days of Sales Outstanding': 'Days of Sales Outstanding (days)',
-            'Days of Inventory Outstanding': 'Days of Inventory Outstanding (days)',
-            'Operating Cycle': 'Operating Cycle (days)',
-            'Days of Payables Outstanding': 'Days of Payables Outstanding (days)',
-            'Cash Conversion Cycle': 'Cash Conversion Cycle (days)',
-            'Gross Profit Margin': 'Gross Profit Margin (%)',
-            'Operating Profit Margin': 'Operating Profit Margin (%)',
-            'Pretax Profit Margin': 'Pretax Profit Margin (%)',
-            'Net Profit Margin': 'Net Profit Margin (%)',
-            'Effective Tax Rate': 'Effective Tax Rate (%)',
-            'Return on Assets': 'Return on Assets (%)',
-            'Return on Equity': 'Return on Equity (%)',
-            'Return on Capital Employed': 'Return on Capital Employed (%)',
-            'EBIT per Revenue': 'EBIT per Revenue (%)',
-            'Debt Ratio': 'Debt Ratio (%)',
-            'Long-term Debt to Capitalization': 'Long-term Debt to Capitalization (%)',
-            'Total Debt to Capitalization': 'Total Debt to Capitalization (%)',
-            'Payout Ratio': 'Payout Ratio (%)',
-            'Operating Cash Flow Sales Ratio': 'Operating Cash Flow Sales Ratio (%)',
-            'Dividend Yield': 'Dividend Yield (%)',
-        })
-
-        # Multiply values in columns with "%" symbol by 100
-        for col in ratios_table.columns:
-            if "%" in col:
-                ratios_table[col] = ratios_table[col] * 100
-
-        ratios_table = round(ratios_table.T,2)
-
-
-        ratios_table = ratios_table.sort_index(axis=1, ascending=True)
-
-        # Display ratios table
         
 
     except Exception as e:
@@ -1148,7 +1130,7 @@ if st.button('Go',on_click=callback) or st.session_state['btn_clicked']:
             'Balance Sheet': balance_sheet_data,
             'Cash flow': cashflow_data,
             'Key Metrics': metrics_data,
-            'Financial Ratios': ratios_table
+            'Financial Ratios': ratios_data
         }
 
         # Write the dataframes to an Excel file, with special formatting for the Market Performance sheet

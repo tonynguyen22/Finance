@@ -96,6 +96,13 @@
       "date": "2025-07-28",
       "shares": 1.243,
       "cost_share": 120.65
+    },
+    {
+      "ticker": "NEE",
+      "company": "NextEra Energy Inc",
+      "date": "2025-07-29",
+      "shares": 2.914,
+      "cost_share": 72.05
     }
   ]
   

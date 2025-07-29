@@ -174,8 +174,7 @@ with st.expander("5. Healthcare (10%)"):
 with st.expander("6. Utilities & Renewable Energy (10%)"):
     st.markdown("""
     **Objective:** Benefit from increasing energy demand (especially from AI data centers) and the global shift towards clean energy.
-    - **Utilities:** **DUK** (Duke Energy)
-    - **Renewable Energy (Pure Play):** **FSLR** (First Solar), **ENPH** (Enphase Energy), :orange[**ICLN** (iShares Global Clean Energy ETF)]
+    - **Utilities & Renewable Energy:** **NEE** (NextEra Energy Inc)
     """)
 
 # Consumer Staples

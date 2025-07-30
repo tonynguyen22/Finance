@@ -102,19 +102,15 @@ st.dataframe(styled.format({
 sector_map = {
     "NU": "Financials",  # Fintech thường thuộc về Financials hoặc Technology, nhưng Financials rộng hơn và phù hợp với mục đích diversify.
     "GOOG": "Communication Services", # Google (Alphabet) được phân loại vào Communication Services vì các dịch vụ internet và quảng cáo.
-    "SOXX": "Technology", # Semiconductors thuộc về Information Technology.
     "TSM": "Technology", # Semiconductors thuộc về Information Technology.
     "CVS": "Healthcare", # Healthcare vẫn là Healthcare.
     "GXO": "Industrials", # Logistics thường thuộc về Industrials.
     "WMT": "Consumer Staples", # Walmart là một công ty bán lẻ lớn, thuộc về Consumer Staples.
-    "KO": "Consumer Staples", # Coca-Cola là một công ty đồ uống lớn, thuộc về Consumer Staples.
-    "SN": "Consumer Cyclical",
-    "NEE": "Utilities"
 }
 
 aggregated["Sector"] = aggregated["Ticker"].map(sector_map)
 # Filter out rows where sector is NaN (if a ticker is not mapped)
-sector_alloc = aggregated.dropna(subset=["Sector"]).groupby("Sector")["Total Value"].sum()
+sector_alloc = aggregated.dropna(subset=["Sector"]).groupby("Sector")["Total Cost"].sum()
 
 if not sector_alloc.empty:
     fig, ax = plt.subplots()

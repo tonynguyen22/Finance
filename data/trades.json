@@ -49,13 +49,6 @@
       "cost_share": 181.53
     },
     {
-      "ticker": "SOXX",
-      "company": "iShares Semiconductor ETF",
-      "date": "2025-06-10",
-      "shares": 1.178,
-      "cost_share": 226.00
-    },
-    {
       "ticker": "TSM",
       "company": "Taiwan Semiconductor Manufacturing ADR",
       "date": "2025-06-10",
@@ -77,32 +70,11 @@
       "cost_share": 43.92
     },
     {
-      "ticker": "KO",
-      "company": "Coca-Cola Co",
-      "date": "2025-07-24",
-      "shares": 2,
-      "cost_share": 69.48
-    },
-    {
       "ticker": "WMT",
       "company": "Walmart Inc",
       "date": "2025-07-24",
       "shares": 1,
       "cost_share": 96.65
-    },
-    {
-      "ticker": "SN",
-      "company": "SharkNinja Inc",
-      "date": "2025-07-28",
-      "shares": 1.243,
-      "cost_share": 120.65
-    },
-    {
-      "ticker": "NEE",
-      "company": "NextEra Energy Inc",
-      "date": "2025-07-29",
-      "shares": 2.914,
-      "cost_share": 72.05
     }
   ]
   

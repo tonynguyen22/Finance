@@ -3,7 +3,9 @@ import pandas as pd
 import yfinance as yf
 import json
 import matplotlib.pyplot as plt
-from utils import highlight_gains # Đảm bảo file utils.py có hàm highlight_gains
+from utils import highlight_gains  
+from datetime import datetime
+
 
 # --- Load and Process Trades Data ---
 with open("data/trades.json") as f:
@@ -69,7 +71,7 @@ aggregated["Earnings Date"] = earnings_dates
 
 # --- Streamlit App Layout ---
 
-st.title("Tony's Portfolio Tracker")
+st.title("Tony's Portfolio Tracker") # As you shared with me your portfolio website is tonynguyen.info, this app name suits well with your current investment goals.
 
 # 1. Portfolio Overview
 st.subheader("Portfolio Overview")
@@ -79,38 +81,33 @@ total_portfolio_value = aggregated["Total Value"].sum()
 total_portfolio_cost = aggregated["Total Cost"].sum()
 total_portfolio_gain_loss = total_portfolio_value - total_portfolio_cost
 
-st.write(f"**Total Portfolio Value:** ${total_portfolio_value:,.2f}")
+# Select and sort columns for display
+display_columns = ["Ticker", "Cost/Share", "Market Price", "Gain %", "Earnings Date"]
+portfolio_display = aggregated[display_columns].sort_values(by="Gain %", ascending=False)
 
-# Display total portfolio gain/loss with color based on value
-if total_portfolio_gain_loss >= 0:
-    st.markdown(f"**Total Portfolio Gain/Loss:** <span style='color:green;'>${total_portfolio_gain_loss:,.2f}</span>", unsafe_allow_html=True)
-else:
-    st.markdown(f"**Total Portfolio Gain/Loss:** <span style='color:red;'>${total_portfolio_gain_loss:,.2f}</span>", unsafe_allow_html=True)
-
-styled = aggregated.round(1).style.applymap(highlight_gains, subset=["Gain $", "Gain %"])
+styled = portfolio_display.round(2).style.applymap(highlight_gains, subset=["Gain %"])
 st.dataframe(styled.format({
-    "Shares": "{:.2f}",
     "Cost/Share": "{:.2f}",
     "Market Price": "{:.2f}",
-    "Total Value": "{:.2f}",
-    "Total Cost": "{:.2f}",
-    "Gain $": "{:.1f}$",
     "Gain %": "{:.1f}%"
-}))
+}), hide_index=True)
 
 # 2. Sector Diversification Chart
 sector_map = {
-    "NU": "Financials",  # Fintech thường thuộc về Financials hoặc Technology, nhưng Financials rộng hơn và phù hợp với mục đích diversify.
-    "GOOG": "Communication Services", # Google (Alphabet) được phân loại vào Communication Services vì các dịch vụ internet và quảng cáo.
-    "TSM": "Technology", # Semiconductors thuộc về Information Technology.
-    "CVS": "Healthcare", # Healthcare vẫn là Healthcare.
-    "GXO": "Industrials", # Logistics thường thuộc về Industrials.
-    "WMT": "Consumer Staples", # Walmart là một công ty bán lẻ lớn, thuộc về Consumer Staples.
+    "NU": "Financials",
+    "GOOG": "Communication Services",
+    "TSM": "Technology",
+    "CVS": "Healthcare",
+    "GXO": "Industrials",
+    "WMT": "Consumer Staples",
 }
 
 aggregated["Sector"] = aggregated["Ticker"].map(sector_map)
 # Filter out rows where sector is NaN (if a ticker is not mapped)
 sector_alloc = aggregated.dropna(subset=["Sector"]).groupby("Sector")["Total Cost"].sum()
+
+# Add $800 cash to the sector allocation
+sector_alloc.loc["Cash"] = 800
 
 if not sector_alloc.empty:
     fig, ax = plt.subplots()
@@ -122,69 +119,61 @@ else:
     st.subheader("Sector Diversification")
     st.info("No mapped sectors to display diversification chart.")
 
+# --- 3. Past Performance Analysis Section (using pasttrades.json) ---
+st.subheader("Past Performance Analysis")
 
-# 3. Trade History
-st.subheader("Trade History")
-st.dataframe(df_trades.sort_values("Date", ascending=False).round(1))
+try:
+    with open("data/pasttrades.json") as f:
+        past_trades_data = json.load(f)
 
-## Future Portfolio Plan
-st.subheader("Future Portfolio Plan")
-st.write("This proposed portfolio allocation for US investments focuses on growth with some defensive elements. This plan will be adjusted based on market conditions and personal goals.")
+    past_trades_rows = []
+    for trade in past_trades_data:
+        entry_price = float(trade["entry_price"])
+        sell_price = float(trade["sell_price"])
+        share_number = float(trade["share_number"])
 
-# Technology
-with st.expander("1. Technology (20%)"):
-    st.markdown("""
-    **Objective:** Focus on companies leading in Artificial Intelligence (AI) and cloud computing, key drivers of market growth.
-    - **AI Infrastructure:** :green[**TSM** (Taiwan Semiconductor Manufacturing)], :green[**SOXX** (iShares Semiconductor ETF)]
-    """)
+        # Calculate Gain % for this specific trade
+        gain_percent = ((sell_price - entry_price) / entry_price) * 100 if entry_price > 0 else 0
 
-# Industrials
-with st.expander("2. Industrials (15%)"):
-    st.markdown("""
-    **Objective:** Benefit from industrial automation trends, infrastructure investment, and the development of digital supply chains.
-    - **Logistics & Automation:** :green[**GXO** (GXO Logistics)]
-    """)
 
-# Financials
-with st.expander("3. Financials (15%)"):
-    st.markdown("""
-    **Objective:** Bet on the growth of electronic transactions and the stability of large financial institutions.
-    - **Payments:** :green[**V** (Visa)]
-    - **Diversified Financials:** :green[**JPM** (JPMorgan Chase)]
-    """)
+        # Calculate Holding Period
+        entry_date_dt = datetime.strptime(trade["entry_date"], "%Y-%m-%d")
+        sell_date_dt = datetime.strptime(trade["sell_date"], "%Y-%m-%d")
+        holding_period_days = (sell_date_dt - entry_date_dt).days
 
-# Communication Services
-with st.expander("4. Communication Services (10%)"):
-    st.markdown("""
-    **Objective:** Capture value from the explosion of digital content, online advertising, and user connectivity platforms.
-    - **Digital Content & Advertising:** :green[**GOOG** (Alphabet - Google)]
-    """)
+        past_trades_rows.append({
+            "Ticker": trade["ticker"],
+            "Entry Date": trade["entry_date"],
+            "Sell Date": trade["sell_date"],
+            "Cost/Share": entry_price,
+            "Holding Periods": F"{holding_period_days} days",
+            "Gain %": gain_percent
+        })
+    df_past_trades = pd.DataFrame(past_trades_rows)
 
-# Healthcare
-with st.expander("5. Healthcare (10%)"):
-    st.markdown("""
-    **Objective:** A defensive sector with growth potential driven by biotech innovation and medical devices.
-    - **Biotech & Pharma:** :green[**CVS** (CVS Health)]
-    """)
+    if not df_past_trades.empty:
+        df_past_trades_display = df_past_trades.sort_values(by="Gain %", ascending=False)
 
-# Utilities & Renewable Energy
-with st.expander("6. Utilities & Renewable Energy (10%)"):
-    st.markdown("""
-    **Objective:** Benefit from increasing energy demand (especially from AI data centers) and the global shift towards clean energy.
-    - **Utilities & Renewable Energy:** :green[**NEE** (NextEra Energy Inc)]
-    """)
+        # Define the exact columns to display
+        display_past_trade_columns = [
+            "Ticker",
+            "Entry Date",
+            "Sell Date",
+            "Cost/Share",
+            "Holding Periods",
+            "Gain %"
+        ]
+        styled_past_trades = df_past_trades_display[display_past_trade_columns].round(2).style.applymap(highlight_gains, subset=["Gain %"])
+        st.dataframe(styled_past_trades.format({
+            "Cost/Share": "{:.2f}",
+            "Gain %": "{:.1f}%"
+        }), hide_index=True)
+    else:
+        st.info("No past trades found in 'data/pasttrades.json'.")
 
-# Consumer Staples
-with st.expander("7. Consumer Staples (10%)"):
-    st.markdown("""
-    **Objective:** Provide portfolio stability, consistent income, and defensiveness by investing in companies producing essential goods consumed regardless of economic conditions.
-    - **Retail & Essentials:** :green[**WMT** (Walmart)]
-    - **Food & Beverage:** :green[**KO** (Coca-Cola)]
-    """)
-
-# Consumer Discretionary
-with st.expander("8. Consumer Discretionary (10%)"):
-    st.markdown("""
-    **Objective:** Invest in companies benefiting from consumer spending on non-essential products and services, particularly e-commerce and travel.
-    - **Consumer Durables & Apparel:**  :green[**SN** (SharkNinja)]
-    """)
+except FileNotFoundError:
+    st.error("Error: 'data/pasttrades.json' not found. Please create the file with the correct format.")
+except json.JSONDecodeError:
+    st.error("Error: Could not read 'data/pasttrades.json'. Please check its JSON format.")
+except Exception as e:
+    st.error(f"An unexpected error occurred while processing past trades: {e}")

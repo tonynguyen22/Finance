@@ -1,0 +1,42 @@
+[
+    {
+        "ticker": "DVA",
+        "entry_date": "2024-09-19",
+        "entry_price": 162.34,
+        "share_number": 1,
+        "sell_date": "2025-01-28",
+        "sell_price": 174.85
+    },
+    {
+        "ticker": "DVA",
+        "entry_date": "2024-10-08",
+        "entry_price": 154.67,
+        "share_number": 1,
+        "sell_date": "2025-01-28",
+        "sell_price": 174.85
+    },
+    {
+        "ticker": "DVA",
+        "entry_date": "2024-10-30",
+        "entry_price": 140.02,
+        "share_number": 1,
+        "sell_date": "2025-01-28",
+        "sell_price": 174.85
+    },
+    {
+        "ticker": "S&P 500",
+        "entry_date": "2024-09-20",
+        "entry_price": 565.23,
+        "share_number": 1,
+        "sell_date": "2025-05-20",
+        "sell_price": 592.73
+    },
+    {
+        "ticker": "S&P 500",
+        "entry_date": "2025-04-08",
+        "entry_price": 521.81,
+        "share_number": 1,
+        "sell_date": "2025-05-20",
+        "sell_price": 592.73
+    }
+]

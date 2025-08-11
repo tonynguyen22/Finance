@@ -109,7 +109,6 @@ sector_alloc = aggregated.dropna(subset=["Sector"]).groupby("Sector")["Total Cos
 
 sector_alloc.loc["Cash"] = 200
 
-
 if not sector_alloc.empty:
     fig, ax = plt.subplots()
     ax.pie(sector_alloc, labels=sector_alloc.index, autopct="%1.1f%%")

@@ -75,6 +75,13 @@
       "date": "2025-07-24",
       "shares": 1,
       "cost_share": 96.65
+    },
+    {
+      "ticker": "CWAN",
+      "company": "Clearwater Analytics Holdings Inc",
+      "date": "2025-08-11",
+      "shares": 10,
+      "cost_share": 19.55
     }
   ]
   

@@ -100,6 +100,7 @@ sector_map = {
     "CVS": "Healthcare",
     "GXO": "Industrials",
     "WMT": "Consumer Staples",
+    "CWAN": "Technology",
 }
 
 aggregated["Sector"] = aggregated["Ticker"].map(sector_map)
@@ -107,7 +108,7 @@ aggregated["Sector"] = aggregated["Ticker"].map(sector_map)
 sector_alloc = aggregated.dropna(subset=["Sector"]).groupby("Sector")["Total Cost"].sum()
 
 # Add $800 cash to the sector allocation
-sector_alloc.loc["Cash"] = 800
+sector_alloc.loc["Cash"] = 200
 
 if not sector_alloc.empty:
     fig, ax = plt.subplots()

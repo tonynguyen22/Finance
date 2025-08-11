@@ -107,12 +107,8 @@ aggregated["Sector"] = aggregated["Ticker"].map(sector_map)
 # Filter out rows where sector is NaN (if a ticker is not mapped)
 sector_alloc = aggregated.dropna(subset=["Sector"]).groupby("Sector")["Total Cost"].sum()
 
-# Add $800 cash to the sector allocation
-<<<<<<< HEAD
 sector_alloc.loc["Cash"] = 200
-=======
-sector_alloc.loc["Cash"] = 417
->>>>>>> 1d4813e0c36935a8a90a7c2c7740dc167ca0194e
+
 
 if not sector_alloc.empty:
     fig, ax = plt.subplots()

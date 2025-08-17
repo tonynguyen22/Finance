@@ -7,4 +7,3 @@ streamlit==1.40.1
 XlsxWriter
 yfinance
 matplotlib
-finnhub
